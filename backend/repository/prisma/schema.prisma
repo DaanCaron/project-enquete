@@ -14,6 +14,14 @@ model Survey {
   questions       Question[]
 }
 
+model Answer {
+  id              Int             @id @default(autoincrement())
+  answer          String
+
+  question        Question @relation(fields: [questionId], references: [id])
+  questionId      Int
+}
+
 model Question {
   id              Int             @id @default(autoincrement())
   question        String
@@ -26,13 +34,7 @@ model Question {
   window          Window?
 }
 
-model Answer {
-  id              Int             @id @default(autoincrement())
-  answer          String
 
-  question        Question @relation(fields: [questionId], references: [id])
-  questionId      Int
-}
 
 model Window {
   id              Int             @id @default(autoincrement())
