@@ -1,71 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Survey {
-  id              Int             @id @default(autoincrement())
-  name            String
-
-  questions       Question[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  questions Question[]
 }
 
 model Answer {
-  id              Int             @id @default(autoincrement())
-  answer          String
+  id         Int      @id @default(autoincrement())
+  answer     String
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+}
 
-  question        Question @relation(fields: [questionId], references: [id])
-  questionId      Int
+model Window {
+  id         Int       @id @default(autoincrement())
+  background String
+  buttons    Button[]
+  question   Question?  
+  Text       Text?
 }
 
 model Question {
-  id              Int             @id @default(autoincrement())
-  question        String
-  sequence        Int
-
-  survey          Survey @relation(fields: [surveyId], references: [id])
-  surveyId        Int
-
-  answers         Answer[]
-  window          Window?
+  id       Int      @id @default(autoincrement())
+  question String
+  sequence Int
+  surveyId Int
+  windowId Int      @unique
+  answers  Answer[]
+  survey   Survey   @relation(fields: [surveyId], references: [id])
+  window   Window   @relation(fields: [windowId], references: [id])
 }
 
 
-
-model Window {
-  id              Int             @id @default(autoincrement())
-  background      String
-
-  question        Question @relation(fields: [questionId], references: [id])
-  questionId      Int             @unique
-
-  buttons         Button[]
-
-  Text            Text?
-}
 
 model Button {
-  id              Int             @id @default(autoincrement())
-  x               Int
-  y               Int
-  width           Int
-  height          Int
-
-  window          Window @relation(fields: [windowId], references: [id])
-  windowId        Int
+  id       Int    @id @default(autoincrement())
+  x        Int
+  y        Int
+  width    Int
+  height   Int
+  windowId Int
+  window   Window @relation(fields: [windowId], references: [id])
 }
 
 model Text {
-  id              Int             @id @default(autoincrement())
-  x               Int
-  y               Int
-  width           Int
-  height          Int
+  id       Int    @id @default(autoincrement())
+  x        Int
+  y        Int
+  width    Int
+  height   Int
+  windowId Int    @unique
+  window   Window @relation(fields: [windowId], references: [id])
+}
 
-  window          Window @relation(fields: [windowId], references: [id])
-  windowId        Int    @unique
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  password String
 }
