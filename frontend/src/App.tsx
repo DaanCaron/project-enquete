@@ -3,13 +3,8 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1 className="text-3xl font-bold">
-          Hello world!
-        </h1>
-
-      </header>
+    <div className='bg-[#1a1941] h-screen'>
+      
     </div>
   );
 }

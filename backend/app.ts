@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import * as bodyParser from 'body-parser';
-import { eventRouter } from './controllers/event.routes'
+import { questionRouter } from './controllers/question.routes'
 
 const app = express();
 
@@ -14,14 +14,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-app.use('/event', eventRouter);
+app.use('/questions', questionRouter);
 
 app.get('/status', (req, res) => {
-    res.json({ message: 'Car calendar API is running...' });
+    res.json({ message: 'Enquete API is running...' });
 });
 
 app.listen(port || 8000, '0.0.0.0', () => {
-    console.log(`Car calendar API is running on port ${port || 8000}.`);
+    console.log(`Enquete API is running on port ${port || 8000}.`);
 });
 
 

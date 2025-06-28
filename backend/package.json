@@ -6,11 +6,10 @@
     "dev": "nodemon --watch src --exec ts-node app.ts",
     "start": "ts-node app.ts",
     "build": "tsc"
-
   },
   "prisma": {
-        "schema": "repository/prisma/schema.prisma"
-    },
+    "schema": "repository/prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

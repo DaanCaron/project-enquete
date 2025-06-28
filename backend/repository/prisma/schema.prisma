@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Survey {
+  id              Int             @id @default(autoincrement())
+  name            String
+
+  questions       Question[]
+}
+
+model Question {
+  id              Int             @id @default(autoincrement())
+  question        String
+  sequence        Int
+
+  survey          Survey @relation(fields: [surveyId], references: [id])
+  surveyId        Int
+
+  answers         Answer[]
+  window          Window?
+}
+
+model Answer {
+  id              Int             @id @default(autoincrement())
+  answer          String
+
+  question        Question @relation(fields: [questionId], references: [id])
+  questionId      Int
+}
+
+model Window {
+  id              Int             @id @default(autoincrement())
+  background      String
+
+  question        Question @relation(fields: [questionId], references: [id])
+  questionId      Int             @unique
+
+  buttons         Button[]
+
+  Text            Text?
+}
+
+model Button {
+  id              Int             @id @default(autoincrement())
+  x               Int
+  y               Int
+  width           Int
+  height          Int
+
+  window          Window @relation(fields: [windowId], references: [id])
+  windowId        Int
+}
+
+model Text {
+  id              Int             @id @default(autoincrement())
+  x               Int
+  y               Int
+  width           Int
+  height          Int
+
+  window          Window @relation(fields: [windowId], references: [id])
+  windowId        Int    @unique
+}
