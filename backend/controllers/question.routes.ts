@@ -3,9 +3,10 @@ import questionService from '../services/question.service';
 
 const questionRouter = express.Router()
 
-questionRouter.get('/', async (req: Request, res: Response, next: NextFunction) =>{
+questionRouter.get('/all', async (req: Request, res: Response, next: NextFunction) =>{
     try{
-
+        const questions = await questionService.getAllQuestions()
+        res.status(200).json(questions)
     }catch (error){
         res.status(500).json({message: "Error retriving all questions."})
     }

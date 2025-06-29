@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import questionService from "../services/QuestionService"
-import { QuestionData } from "../types"
+import questionService from "../../services/QuestionService"
+import { QuestionData } from "../../types"
 
 const Question: React.FC = () => {
     const [question, setQuestion] = useState<QuestionData | null>(null)
 
     useEffect(() => {
-        fetchQuestionBySequenceAndSurvey(1,4)
+        fetchQuestionBySequenceAndSurvey(1,5)
     }, [])
 
     const fetchQuestionBySequenceAndSurvey = async (sequence: number, survey: number) => {

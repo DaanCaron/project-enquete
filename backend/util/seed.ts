@@ -1,17 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const main = async () => {
-    await prisma.answer.deleteMany();
-    await prisma.button.deleteMany();
-    await prisma.text.deleteMany();
-    await prisma.question.deleteMany();
-    await prisma.window.deleteMany();
-    await prisma.survey.deleteMany();
-    await prisma.user.deleteMany();
+  await prisma.answer.deleteMany();
+  await prisma.button.deleteMany();
+  await prisma.text.deleteMany();
+  await prisma.question.deleteMany();
+  await prisma.window.deleteMany();
+  await prisma.survey.deleteMany();
+  await prisma.user.deleteMany();
 
-    const survey = await prisma.survey.create({
+  const survey = await prisma.survey.create({
     data: {
       name: "Candy survey",
     },
@@ -57,14 +57,56 @@ const main = async () => {
       },
     },
   });
-}
+
+  const window2 = await prisma.window.create({
+    data: {
+      background: "#07f5f0",
+      buttons: {
+        create: [
+          { x: 650, y: 500, width: 200, height: 100, text: "Yes" },
+          { x: 1100, y: 500, width: 200, height: 100, text: "No" },
+          { x: 1100, y: 500, width: 200, height: 100, text: "Non opinion" },
+        ],
+      },
+      text: {
+        create: {
+          x: 460,
+          y: 200,
+          width: 400,
+          height: 100,
+        },
+      },
+    },
+  });
+
+  const question2 = await prisma.question.create({
+    data: {
+      question: "Was it a candy tasty?",
+      sequence: 2,
+      survey: {
+        connect: { id: survey.id },
+      },
+      window: {
+        connect: { id: window2.id },
+      },
+      answers: {
+        create: [
+          { answer: "Yes" },
+          { answer: "No" },
+          { answer: "Not sure" },
+          { answer: "Yes" },
+        ],
+      },
+    },
+  });
+};
 (async () => {
-        try {
-            await main();
-            await prisma.$disconnect();
-        } catch (error) {
-            console.error(error);
-            await prisma.$disconnect();
-            process.exit(1);
-        }
+  try {
+    await main();
+    await prisma.$disconnect();
+  } catch (error) {
+    console.error(error);
+    await prisma.$disconnect();
+    process.exit(1);
+  }
 })();
