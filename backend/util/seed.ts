@@ -19,19 +19,19 @@ const main = async () => {
 
   const window1 = await prisma.window.create({
     data: {
-      background: "blue",
+      background: "#6765f0",
       buttons: {
         create: [
-          { x: 10, y: 10, width: 100, height: 50, text: "Yes" },
-          { x: 120, y: 10, width: 100, height: 50, text: "No" },
+          { x: 700, y: 500, width: 200, height: 100, text: "Yes" },
+          { x: 1000, y: 500, width: 200, height: 100, text: "No" },
         ],
       },
       text: {
         create: {
-          x: 20,
-          y: 80,
-          width: 200,
-          height: 50,
+          x: 960,
+          y: 200,
+          width: 400,
+          height: 100,
         },
       },
     },
