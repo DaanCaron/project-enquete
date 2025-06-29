@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import questionService from '../services/question.service';
 
 const questionRouter = express.Router()
 
@@ -10,12 +11,21 @@ questionRouter.get('/', async (req: Request, res: Response, next: NextFunction) 
     }
 })
 
-questionRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =>{
-    const id = req.params.id
+questionRouter.get('/:surveyId/:questionNumber', async (req: Request, res: Response, next: NextFunction) =>{
+    const questionNumber =  parseInt(req.params.questionNumber)
+    const surveyId =  parseInt(req.params.surveyId)
+    
     try{
-
+        const question = await questionService.getQuestionOnIdAndSurveyId(questionNumber, surveyId)
+        res.status(200).json(question)
     }catch (error){
-        res.status(500).json({message: "Error retriving question with id " + id +"."})
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Failed to delete event', error: error.message });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error', error: String(error) });
+        }
+        // res.status(500).json({message: "Error retriving question with id " + questionId +", on survey " + surveyId + "."})
     } 
 })
 
