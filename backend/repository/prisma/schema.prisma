@@ -47,6 +47,7 @@ model Button {
   y        Int
   width    Int
   height   Int
+  text     String
   windowId Int
   window   Window @relation(fields: [windowId], references: [id])
 }

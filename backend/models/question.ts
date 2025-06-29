@@ -13,7 +13,7 @@ export class Question {
     
     private answers: Answer[];    
     private surveyId: number | null
-    private window?: Window
+    private windowId?: number | null
 
     constructor(params: {
       id?: number;
@@ -21,17 +21,17 @@ export class Question {
       sequence: number;
       answers?: Answer[];
       surveyId: number | null
-      window?: Window
+      windowId?: number | null
     }) {
       this.id = params.id;
       this.question = params.question;
       this.sequence = params.sequence;
       this.answers = params.answers ?? [];
       this.surveyId = params.surveyId
-      this.window = params.window
+      this.windowId = params.windowId
     } 
 
-    static from(data: QuestionPrisma & { answers?: AnswerPrisma[], window?: WindowPrisma }): Question {
+    static from(data: QuestionPrisma & { answers?: AnswerPrisma[] }): Question {
       return new Question({
         id: data?.id,
         question: data.question,
@@ -40,7 +40,7 @@ export class Question {
           ? data.answers.map((answer) => Answer.from(answer))
           : [],
         surveyId: data.surveyId,
-        window: data.window ? Window.from(data.window) : undefined,
+        windowId: data.windowId,
       });
     } 
 
@@ -64,6 +64,10 @@ export class Question {
         return this.surveyId
     } 
 
+    public getWindowId(){
+      return this.windowId
+    } 
+
     // Setters
     public setId(id: number): void {
       this.id = id;
@@ -82,6 +86,10 @@ export class Question {
     }
 
     public setSurveyId(surveyId: number): void {
-        this.surveyId = surveyId
+      this.surveyId = surveyId
+    }
+
+    public setWindowId(windowId: number){
+      this.windowId = windowId
     }
 }

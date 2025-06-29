@@ -1,27 +1,32 @@
-import { Question as QuestionPrisma, Window as WindowPrisma } from "@prisma/client"
+import { Question as QuestionPrisma, Window as WindowPrisma, Button as ButtonPrisma } from "@prisma/client"
 import { Question } from "./question"
+import { Button } from "./button"
 
 export class Window{
     private id?: number | null
     private background: string
 
     private question?: Question
+    private buttons: Button[]
 
     constructor(params: {
         id?: number,
         background: string,
         question?: Question
+        buttons: Button[]
     }){
         this.id = params.id
         this.background = params.background
         this.question = params.question
+        this.buttons = params.buttons
     }
 
-    static from(data: WindowPrisma & {question?: QuestionPrisma}): Window {
+    static from(data: WindowPrisma & {question?: QuestionPrisma, buttons?: ButtonPrisma[]}): Window {
         return new Window({
             id: data.id,
             background: data.background,
             question: data.question ? Question.from(data.question) : undefined,
+            buttons: data.buttons ? data.buttons.map((button) => Button.from(button)) : []
         })
     }
 
@@ -37,6 +42,10 @@ export class Window{
         return this.question
     }
 
+    publicgetButtons() {
+        return this.buttons
+    } 
+
     public setId(id:number) {
         this.id = id
     }
@@ -47,5 +56,9 @@ export class Window{
 
     public setQuestion(question: Question) {
         this.question = question
+    }
+
+    public setButtons(buttons: Button[]){
+        this.buttons = buttons
     }
 }
