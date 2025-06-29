@@ -1,10 +1,12 @@
 import {
   Question as QuestionPrisma,
   Answer as AnswerPrisma,
-  Window as WindowPrisma
+  Window as WindowPrisma,
+  Survey as SurveyPrisma
 } from "@prisma/client";
 import { Answer } from "./answer";
 import { Window } from "./window";
+import { Survey } from "./survey";
 
 export class Question {
     private id?: number | null;
@@ -12,26 +14,26 @@ export class Question {
     private sequence: number;
     
     private answers: Answer[];    
-    private surveyId: number | null
-    private windowId?: number | null
+    private survey?: Survey
+    private window?: Window
 
     constructor(params: {
       id?: number;
       question: string;
       sequence: number;
       answers?: Answer[];
-      surveyId: number | null
-      windowId?: number | null
+      survey?: Survey
+      window?: Window
     }) {
       this.id = params.id;
       this.question = params.question;
       this.sequence = params.sequence;
       this.answers = params.answers ?? [];
-      this.surveyId = params.surveyId
-      this.windowId = params.windowId
+      this.survey = params.survey
+      this.window = params.window
     } 
 
-    static from(data: QuestionPrisma & { answers?: AnswerPrisma[] }): Question {
+    static from(data: QuestionPrisma & { answers?: AnswerPrisma[], survey?: SurveyPrisma, window?: WindowPrisma }): Question {
       return new Question({
         id: data?.id,
         question: data.question,
@@ -39,8 +41,8 @@ export class Question {
         answers: data.answers
           ? data.answers.map((answer) => Answer.from(answer))
           : [],
-        surveyId: data.surveyId,
-        windowId: data.windowId,
+        survey: data.survey ? Survey.from(data.survey) : undefined,
+        window: data.window ? Window.from(data.window) : undefined,
       });
     } 
 
@@ -60,12 +62,12 @@ export class Question {
       return this.answers;
     } 
 
-    public getSurveyId(): number | null{
-        return this.surveyId
+    public getSurvey(){
+        return this.survey
     } 
 
-    public getWindowId(){
-      return this.windowId
+    public getWindow(){
+      return this.window
     } 
 
     // Setters
@@ -85,11 +87,11 @@ export class Question {
       this.answers = answers;
     }
 
-    public setSurveyId(surveyId: number): void {
-      this.surveyId = surveyId
+    public setSurvey(survey: Survey): void {
+      this.survey = survey
     }
 
-    public setWindowId(windowId: number){
-      this.windowId = windowId
+    public setWindow(window: Window){
+      this.window = window
     }
 }

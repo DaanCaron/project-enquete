@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-app.use('/questions', questionRouter);
+app.use('/question', questionRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Enquete API is running...' });

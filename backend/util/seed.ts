@@ -26,7 +26,7 @@ const main = async () => {
           { x: 120, y: 10, width: 100, height: 50, text: "No" },
         ],
       },
-      Text: {
+      text: {
         create: {
           x: 20,
           y: 80,

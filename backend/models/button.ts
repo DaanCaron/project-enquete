@@ -1,4 +1,5 @@
-import { Button as ButtonPrisma } from "@prisma/client"
+import { Button as ButtonPrisma, Window as WindowPrisma } from "@prisma/client"
+import { Window } from "./window"
 
 export class Button {
     private id?: number
@@ -8,19 +9,19 @@ export class Button {
     private height: number
     private text: string
 
-    private windowId: number | null
+    private window?: Window
 
-    constructor(params: {id?: number,  x: number, y: number, width: number, height: number, text: string, windowId: number}){
+    constructor(params: {id?: number,  x: number, y: number, width: number, height: number, text: string, window?: Window}){
         this.id = params.id
         this.x = params.x
         this.y = params.y
         this.width = params.width
         this.height = params.height
         this.text = params.text
-        this.windowId = params.windowId
+        this.window = params.window
     }
 
-    static from(data: ButtonPrisma): Button{
+    static from(data: ButtonPrisma & {window? : WindowPrisma}): Button{
         return new Button({
             id: data.id,
             x: data.x,
@@ -28,7 +29,7 @@ export class Button {
             width: data.width,
             height: data.height,
             text: data.text,
-            windowId: data.windowId
+            window: data.window ? Window.from(data.window) : undefined
         })
     }
 
@@ -56,8 +57,8 @@ export class Button {
         return this.text
     }
 
-    public getWindowId(){
-        return this.windowId
+    public getWindow(){
+        return this.window
     }
 
 
@@ -85,7 +86,7 @@ export class Button {
         this.text = text
     }
 
-    public setWindowId(windowId: number){
-        this.windowId = windowId
+    public setWindow(window: Window){
+        this.window = window
     }
 }

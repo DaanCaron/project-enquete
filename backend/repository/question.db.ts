@@ -8,7 +8,7 @@ const getQuestionBySequenceAndSurveyId = async (sequence: number, surveyId: numb
                 sequence: sequence,
                 surveyId: surveyId
             },
-            include: {answers: true, window: true, survey: true}
+            include: {answers: true, survey: true, window: {include: {buttons: true, text: true}}}
         })
         if (questionPrisma === null){
             return null
