@@ -4,6 +4,7 @@ import { QuestionData, Survey, WindowConfig } from "@/types"
 import questionService from "@/services/QuestionService"
 import surveyService from "@/services/surveyService"
 import LeftSideMenu from "./leftSideMenu"
+import windowService from "@/services/windowService"
 
 const Editor = () => {
 
@@ -15,12 +16,12 @@ const Editor = () => {
     const [selectedSurveyId, setSelectedSurveyId] = useState<number | null>(null)
 
     const [toggle, setToggle] = useState(false);
-    const [message, setMessage] = useState<{message:string, type: string} | null>(null)
+    const [message, setMessage] = useState<{ message: string, type: string } | null>(null)
 
     const windowData = useRef<WindowConfig | null>(null)
 
     useEffect(() => {
-        setMessage({message:"", type: ""})
+        setMessage({ message: "", type: "" })
         windowData.current = null
         const doRefetch = async () => {
             const surveysData = await fetchAllSurveys()
@@ -39,7 +40,7 @@ const Editor = () => {
     }, [toggle])
 
     useEffect(() => {
-        setMessage({message:"", type: ""})
+        setMessage({ message: "", type: "" })
         if (!questions) return
         setDisabledBack(selectedQuestion === 1)
         setDisabledNext(selectedQuestion === questions.length)
@@ -64,7 +65,7 @@ const Editor = () => {
                 setDisabledNext(questionData.length <= 1)
             }
         } catch (error) {
-            console.error("Failed to connect to server to get questions.")
+            console.error("Failed to connect to server to get questions.", error)
         }
     }
 
@@ -77,7 +78,7 @@ const Editor = () => {
                 return surveyData
             }
         } catch (error) {
-            console.error("Failed to connect to server to get surveys.")
+            console.error("Failed to connect to server to get surveys.", error)
         }
         return null
     }
@@ -101,20 +102,33 @@ const Editor = () => {
         }
     }
 
-    const onSubmit = () => {
-        if(!windowData.current){
+    const onSubmit = async () => {
+        if (!windowData.current) {
             setMessage({
                 message: "No changes made, did not save!",
                 type: "Error"
             })
             return
         }
-        setMessage({
-                message: "Saved!",
-                type: "success"
+        try {
+            const res = await windowService.updateWindow(windowData.current)
+            if (res.ok) {
+                
+                const windowData = await res.json()
+                console.log(windowData)
+                setMessage({
+                    message: "Saved!",
+                    type: "success"
+                })
+            }
+        } catch (error) {
+            setMessage({
+                message: "Generic error check logs!",
+                type: "Error"
             })
-        console.log("Did this", windowData.current)
-        
+            console.error("Failed to update window.", error)
+        }
+
     }
 
     return (
@@ -128,7 +142,7 @@ const Editor = () => {
                         onUpdateWindow={onUpdateWindow}
                     />}
                 <LeftSideMenu
-                    submit={() => onSubmit() }
+                    submit={() => onSubmit()}
                     reFetch={() => setToggle(prev => !prev)}
                     surveys={surveys}
                     fetchAllQuestionsBySurveyId={fetchAllQuestionsBySurveyId}

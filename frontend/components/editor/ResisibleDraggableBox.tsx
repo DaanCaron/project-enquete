@@ -47,7 +47,6 @@ const ResizableDraggableBox: React.FC<Props> = ({
     const onResizing = (e: MouseEvent) => {
         if (!isResizing.current) return;
         const { x, y, w, h } = resizeStartRef.current;
-        console.log({ x, y, w, h })
         const dx = (e.clientX - x) / scaleX;
         const dy = (e.clientY - y) / scaleY;
         const newWidth = Math.max(20, w + dx);

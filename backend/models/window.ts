@@ -25,15 +25,15 @@ export class Window{
         this.text = params.text
     }
 
-    static from(data: WindowPrisma & {question?: QuestionPrisma, buttons?: ButtonPrisma[], text?: TextPrisma}): Window {
-        return new Window({
-            id: data.id,
-            background: data.background,
-            question: data.question ? Question.from(data.question) : undefined,
-            buttons: data.buttons ? data.buttons.map((button) => Button.from(button)) : [],
-            text: data.text ? Text.from(data.text) : undefined,
-        })
-    }
+    static from(data: WindowPrisma & {question?: QuestionPrisma | null, buttons?: ButtonPrisma[] | null, text?: TextPrisma | null}): Window {
+    return new Window({
+        id: data.id,
+        background: data.background,
+        question: data.question ? Question.from(data.question) : undefined,
+        buttons: data.buttons ? data.buttons.map((button) => Button.from(button)) : [],
+        text: data.text ? Text.from(data.text) : undefined,
+    })
+}
 
     public getId(): number | null | undefined {
         return this.id
