@@ -52,9 +52,15 @@ const Editor = () => {
     return (
         <div className="flex flex-col items-center justify-center w-screen h-screen">
 
-            {questions && <Window question={questions[selectedQuestion - 1]} previewWidth={1280} previewHeight={720} onUpdateWindow={onUpdateWindow}/>}
+            {questions && 
+            <Window 
+                question={questions[selectedQuestion - 1]} 
+                previewWidth={1280} 
+                previewHeight={720} 
+                onUpdateWindow={onUpdateWindow}
+            />}
 
-            <div className="flex gap-5">
+            <div className="flex gap-5 mt-5">
                 <button
                     onClick={onBack}
                     disabled={disabledBack}

@@ -6,7 +6,7 @@ type WindowProps = {
     question: QuestionData;
     previewWidth: number;
     previewHeight: number;
-    onUpdateWindow?: (updatedWindow: QuestionData["window"]) => void; // optional callback to lift state up
+    onUpdateWindow?: (updatedWindow: QuestionData["window"]) => void;
 };
 
 const Window: React.FC<WindowProps> = ({
@@ -15,10 +15,10 @@ const Window: React.FC<WindowProps> = ({
     previewHeight,
     onUpdateWindow,
 }) => {
-    // Use local state so dragging triggers rerender:
     const [windowObj, setWindowObj] = useState(question.window);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const scaleX = previewWidth / 1920; // base size for scaling, adjust if needed
+    const scaleX = previewWidth / 1920;
     const scaleY = previewHeight / 1080;
 
     const dragItem = useRef<{ type: "button" | "text"; id: number } | null>(null);
@@ -35,23 +35,49 @@ const Window: React.FC<WindowProps> = ({
     ) => {
         e.preventDefault();
         dragItem.current = { type, id };
-        const rect = (e.target as HTMLElement).getBoundingClientRect();
+
+        const containerRect = containerRef.current?.getBoundingClientRect();
+        const targetRect = (e.target as HTMLElement).getBoundingClientRect();
+
+        if (!containerRect) return;
+
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+
+        const elementX = (targetRect.left - containerRect.left);
+        const elementY = (targetRect.top - containerRect.top);
+
         dragOffset.current = {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
+            x: mouseX - elementX,
+            y: mouseY - elementY,
         };
     };
 
+
     const onMouseMove = (e: React.MouseEvent) => {
-        if (!dragItem.current) return;
+        if (!dragItem.current || !containerRef.current) return;
 
         const { type, id } = dragItem.current;
+        const containerRect = containerRef.current.getBoundingClientRect();
 
-        let newX = e.clientX - dragOffset.current.x;
-        let newY = e.clientY - dragOffset.current.y;
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
 
-        newX = Math.min(Math.max(newX, 0), previewWidth);
-        newY = Math.min(Math.max(newY, 0), previewHeight);
+        const width =
+            type === "button"
+                ? windowObj.buttons.find((b) => b.id === id)?.width ?? 0
+                : windowObj.text.width;
+
+        const height =
+            type === "button"
+                ? windowObj.buttons.find((b) => b.id === id)?.height ?? 0
+                : windowObj.text.height;
+
+        let newX = mouseX - dragOffset.current.x;
+        let newY = mouseY - dragOffset.current.y;
+
+        newX = Math.min(Math.max(newX, 0), previewWidth - width * scaleX);
+        newY = Math.min(Math.max(newY, 0), previewHeight - height * scaleY);
 
         const realX = Math.round(newX / scaleX);
         const realY = Math.round(newY / scaleY);
@@ -80,6 +106,7 @@ const Window: React.FC<WindowProps> = ({
 
     return (
         <div
+            ref={containerRef}
             className="relative rounded-lg shadow-lg select-none"
             style={{
                 width: previewWidth,
