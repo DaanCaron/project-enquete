@@ -5,6 +5,7 @@ import questionService from "@/services/QuestionService"
 import surveyService from "@/services/surveyService"
 import LeftSideMenu from "./leftSideMenu"
 import windowService from "@/services/windowService"
+import RightSideMenu from "./rightSideMenu"
 
 const Editor = () => {
 
@@ -100,9 +101,19 @@ const Editor = () => {
             buttons: updatedWindow.buttons,
             text: updatedWindow.text
         }
+
+        if (questions) {
+        const updatedQuestions = [...questions]
+        updatedQuestions[selectedQuestion - 1] = {
+            ...updatedQuestions[selectedQuestion - 1],
+            window: { ...updatedWindow }
+        }
+        setQuestions(updatedQuestions)
+    }
     }
 
     const onSubmit = async () => {
+        console.log(windowData)
         if (!windowData.current) {
             setMessage({
                 message: "No changes made, did not save!",
@@ -113,13 +124,14 @@ const Editor = () => {
         try {
             const res = await windowService.updateWindow(windowData.current)
             if (res.ok) {
-                
-                const windowData = await res.json()
-                console.log(windowData)
+
+                const savedWindow = await res.json()
+                console.log(savedWindow)
                 setMessage({
                     message: "Saved!",
                     type: "success"
                 })
+                windowData.current = null
             }
         } catch (error) {
             setMessage({
@@ -131,17 +143,38 @@ const Editor = () => {
 
     }
 
+    const changeColor = (color: string) => {
+    if (questions) {
+        const updated = [...questions]
+        updated[selectedQuestion - 1].window.background = color
+        setQuestions(updated)
+
+        const updatedWindow = updated[selectedQuestion - 1].window
+
+        // 💥 Call the same function used when a user makes any other change
+        onUpdateWindow(updatedWindow)
+    }
+}
+
     return (
         <div className="h-screen w-screen flex flex-col justify-center items-center">
             <div className="flex flex-row items-start ">
+
                 {questions &&
-                    <Window
-                        question={questions[selectedQuestion - 1]}
-                        previewWidth={1280}
-                        previewHeight={720}
-                        onUpdateWindow={onUpdateWindow}
-                    />}
-                <LeftSideMenu
+                    <>
+                        <LeftSideMenu
+                            originalColor={questions[selectedQuestion - 1].window.background}
+                            changeColor={changeColor}
+                        />
+                        <Window
+                            question={questions[selectedQuestion - 1]}
+                            previewWidth={1280}
+                            previewHeight={720}
+                            onUpdateWindow={onUpdateWindow}
+                        />
+                    </>}
+
+                <RightSideMenu
                     submit={() => onSubmit()}
                     reFetch={() => setToggle(prev => !prev)}
                     surveys={surveys}
