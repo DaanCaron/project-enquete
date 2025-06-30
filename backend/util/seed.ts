@@ -99,6 +99,53 @@ const main = async () => {
       },
     },
   });
+
+  const survey2 = await prisma.survey.create({
+    data: {
+      name: "test survey",
+    },
+  });
+
+  const window3 = await prisma.window.create({
+    data: {
+      background: "#ef65f0",
+      buttons: {
+        create: [
+          { x: 700, y: 500, width: 200, height: 100, text: "Yes" },
+          { x: 1000, y: 500, width: 200, height: 100, text: "No" },
+        ],
+      },
+      text: {
+        create: {
+          x: 960,
+          y: 200,
+          width: 400,
+          height: 100,
+        },
+      },
+    },
+  });
+
+  const question3 = await prisma.question.create({
+    data: {
+      question: "Was the test easy?",
+      sequence: 1,
+      survey: {
+        connect: { id: survey2.id },
+      },
+      window: {
+        connect: { id: window3.id },
+      },
+      answers: {
+        create: [
+          { answer: "Yes" },
+          { answer: "No" },
+          { answer: "Not sure" },
+          { answer: "Yes" },
+        ],
+      },
+    },
+  });
 };
 (async () => {
   try {

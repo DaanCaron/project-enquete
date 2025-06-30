@@ -29,27 +29,29 @@ const ResizableDraggableBox: React.FC<Props> = ({
 }) => {
     const isResizing = useRef(false);
 
-    const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, w: 0, h: 0 });
+    const resizeStartRef = useRef({ x: 0, y: 0, w: 0, h: 0 });
 
     const onResizeMouseDown = (e: React.MouseEvent) => {
         e.stopPropagation();
         isResizing.current = true;
-        setResizeStart({
+        resizeStartRef.current = {
             x: e.clientX,
             y: e.clientY,
             w: width,
             h: height,
-        });
+        };
         document.addEventListener("mousemove", onResizing);
         document.addEventListener("mouseup", onResizeMouseUp);
     };
 
     const onResizing = (e: MouseEvent) => {
         if (!isResizing.current) return;
-        const dx = (e.clientX - resizeStart.x) / scaleX;
-        const dy = (e.clientY - resizeStart.y) / scaleY;
-        const newWidth = Math.max(20, resizeStart.w + dx);
-        const newHeight = Math.max(20, resizeStart.h + dy);
+        const { x, y, w, h } = resizeStartRef.current;
+        console.log({ x, y, w, h })
+        const dx = (e.clientX - x) / scaleX;
+        const dy = (e.clientY - y) / scaleY;
+        const newWidth = Math.max(20, w + dx);
+        const newHeight = Math.max(20, h + dy);
         onResize(id, Math.round(newWidth), Math.round(newHeight));
     };
 

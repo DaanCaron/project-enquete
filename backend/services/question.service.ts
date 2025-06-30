@@ -38,7 +38,29 @@ const getQuestionOnIdAndSurveyId = async (questionNumber: number, surveyId: numb
     }
 }
 
+const getAllQuestionsBySurveyId = async (surveyId: number): Promise<Question[] | null> =>{
+    const survey = await surveyDb.getSurveyById(surveyId)
+    
+    if(!survey){
+        throw new Error('No survey found with given ID');
+    }
+
+    try{
+        const questions = await questionDb.getAllQuestionsBySurveyId(surveyId)
+        
+        if(!questions){
+            throw new Error('No question found with given ID');
+        }
+        return questions
+
+    }catch(error){
+        console.error(error);
+        throw new Error('Error Question on given Survey');
+    }
+}
+
 export default {
     getQuestionOnIdAndSurveyId,
-    getAllQuestions
+    getAllQuestions,
+    getAllQuestionsBySurveyId
 }

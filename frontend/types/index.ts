@@ -32,7 +32,7 @@ export type WindowConfig ={
 export type Survey ={
     id: number;
     name: string;
-    questions: any[]; // or define proper type if needed
+    questions: any[]; 
 }
 
 export type QuestionData ={

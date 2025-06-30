@@ -6,7 +6,7 @@ const Question: React.FC = () => {
     const [question, setQuestion] = useState<QuestionData | null>(null)
 
     useEffect(() => {
-        fetchQuestionBySequenceAndSurvey(1,5)
+        fetchQuestionBySequenceAndSurvey(1,6)
     }, [])
 
     const fetchQuestionBySequenceAndSurvey = async (sequence: number, survey: number) => {

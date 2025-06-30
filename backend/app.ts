@@ -3,6 +3,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import { questionRouter } from './controllers/question.routes'
+import { surveyRouter } from './controllers/survey.routes';
+import { windowRouter } from './controllers/window.routes';
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.use(bodyParser.json());
 
 
 app.use('/question', questionRouter);
+app.use('/survey', surveyRouter);
+app.use('/window', windowRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Enquete API is running...' });

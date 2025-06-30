@@ -107,7 +107,7 @@ const Window: React.FC<WindowProps> = ({
     return (
         <div
             ref={containerRef}
-            className="relative rounded-lg shadow-lg select-none"
+            className="relative rounded-lg shadow-lg select-none "
             style={{
                 width: previewWidth,
                 height: previewHeight,

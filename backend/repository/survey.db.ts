@@ -19,6 +19,24 @@ const getSurveyById = async (id: number): Promise<Survey | null> =>{
     }
 }
 
+const getAllSurveys = async () => {
+  try {
+    const surveyPrisma = await database.survey.findMany({
+      include: {
+        questions: true
+      },
+    });
+    if (surveyPrisma === null) {
+      return null;
+    }
+    return surveyPrisma.map((survey) => Survey.from(survey));
+  } catch (error) {
+    console.error(error);
+    throw new Error("Database error for events. See server log for details.");
+  }
+};
+
 export default{
-    getSurveyById
+    getSurveyById,
+    getAllSurveys
 }

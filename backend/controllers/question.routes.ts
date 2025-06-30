@@ -12,6 +12,23 @@ questionRouter.get('/all', async (req: Request, res: Response, next: NextFunctio
     }
 })
 
+questionRouter.get('/:surveyId', async (req: Request, res: Response, next: NextFunction) =>{
+    const surveyId =  parseInt(req.params.surveyId)
+
+    try{
+        const questions = await questionService.getAllQuestionsBySurveyId(surveyId)
+        res.status(200).json(questions)
+    }catch (error){
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Failed to delete event', error: error.message });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error', error: String(error) });
+        }
+        // res.status(500).json({message: "Error retriving question with id " + questionId +", on survey " + surveyId + "."})
+    }
+})
+
 questionRouter.get('/:surveyId/:questionNumber', async (req: Request, res: Response, next: NextFunction) =>{
     const questionNumber =  parseInt(req.params.questionNumber)
     const surveyId =  parseInt(req.params.surveyId)

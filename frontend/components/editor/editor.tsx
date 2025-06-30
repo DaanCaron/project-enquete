@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Window from "./window"
-import { QuestionData } from "@/types"
+import { QuestionData, Survey, WindowConfig } from "@/types"
 import questionService from "@/services/QuestionService"
+import surveyService from "@/services/surveyService"
+import LeftSideMenu from "./leftSideMenu"
 
 const Editor = () => {
 
@@ -9,31 +11,76 @@ const Editor = () => {
     const [selectedQuestion, setSelectedQuestion] = useState<number>(1)
     const [disabledBack, setDisabledBack] = useState<boolean>(true)
     const [disabledNext, setDisabledNext] = useState<boolean>(false)
+    const [surveys, setSurveys] = useState<Survey[] | null>(null)
+    const [selectedSurveyId, setSelectedSurveyId] = useState<number | null>(null)
+
+    const [toggle, setToggle] = useState(false);
+    const [message, setMessage] = useState<{message:string, type: string} | null>(null)
+
+    const windowData = useRef<WindowConfig | null>(null)
 
     useEffect(() => {
-        fetchAllQuestions()
-    }, [])
+        setMessage({message:"", type: ""})
+        windowData.current = null
+        const doRefetch = async () => {
+            const surveysData = await fetchAllSurveys()
+            if (!surveysData) return
 
-    const fetchAllQuestions = async () => {
+            if (selectedSurveyId !== null) {
+                await fetchAllQuestionsBySurveyId(selectedSurveyId, true)
+            } else {
+                const fallbackSurveyId = surveysData[0]?.id
+                if (fallbackSurveyId) {
+                    await fetchAllQuestionsBySurveyId(fallbackSurveyId)
+                }
+            }
+        }
+        doRefetch()
+    }, [toggle])
+
+    useEffect(() => {
+        setMessage({message:"", type: ""})
+        if (!questions) return
+        setDisabledBack(selectedQuestion === 1)
+        setDisabledNext(selectedQuestion === questions.length)
+    }, [selectedQuestion, questions])
+
+    const fetchAllQuestionsBySurveyId = async (
+        surveyId: number,
+        preserveQuestionIndex: boolean = false
+    ) => {
         try {
-            const res = await questionService.getAllQuestions()
+            const res = await questionService.getAllQuestionsBysurveyId(surveyId)
             if (res.ok) {
                 const questionData = await res.json()
                 setQuestions(questionData)
+                setSelectedSurveyId(surveyId)
+
+                setSelectedQuestion(prev =>
+                    preserveQuestionIndex ? Math.min(prev, questionData.length) : 1
+                )
 
                 setDisabledBack(true)
                 setDisabledNext(questionData.length <= 1)
             }
         } catch (error) {
-            console.error("Failed to connect to server to get question.")
+            console.error("Failed to connect to server to get questions.")
         }
     }
 
-    useEffect(() => {
-        if (!questions) return
-        setDisabledBack(selectedQuestion === 1)
-        setDisabledNext(selectedQuestion === questions.length)
-    }, [selectedQuestion, questions])
+    const fetchAllSurveys = async (): Promise<Survey[] | null> => {
+        try {
+            const res = await surveyService.getAllSurveys()
+            if (res.ok) {
+                const surveyData = await res.json()
+                setSurveys(surveyData)
+                return surveyData
+            }
+        } catch (error) {
+            console.error("Failed to connect to server to get surveys.")
+        }
+        return null
+    }
 
     const onBack = () => {
         setSelectedQuestion((prev) => Math.max(prev - 1, 1))
@@ -46,19 +93,48 @@ const Editor = () => {
     }
 
     const onUpdateWindow = (updatedWindow: QuestionData["window"]) => {
-        console.log(updatedWindow)
+        windowData.current = {
+            id: updatedWindow.id,
+            background: updatedWindow.background,
+            buttons: updatedWindow.buttons,
+            text: updatedWindow.text
+        }
+    }
+
+    const onSubmit = () => {
+        if(!windowData.current){
+            setMessage({
+                message: "No changes made, did not save!",
+                type: "Error"
+            })
+            return
+        }
+        setMessage({
+                message: "Saved!",
+                type: "success"
+            })
+        console.log("Did this", windowData.current)
+        
     }
 
     return (
-        <div className="flex flex-col items-center justify-center w-screen h-screen">
-
-            {questions && 
-            <Window 
-                question={questions[selectedQuestion - 1]} 
-                previewWidth={1280} 
-                previewHeight={720} 
-                onUpdateWindow={onUpdateWindow}
-            />}
+        <div className="h-screen w-screen flex flex-col justify-center items-center">
+            <div className="flex flex-row items-start ">
+                {questions &&
+                    <Window
+                        question={questions[selectedQuestion - 1]}
+                        previewWidth={1280}
+                        previewHeight={720}
+                        onUpdateWindow={onUpdateWindow}
+                    />}
+                <LeftSideMenu
+                    submit={() => onSubmit() }
+                    reFetch={() => setToggle(prev => !prev)}
+                    surveys={surveys}
+                    fetchAllQuestionsBySurveyId={fetchAllQuestionsBySurveyId}
+                    message={message}
+                />
+            </div>
 
             <div className="flex gap-5 mt-5">
                 <button
@@ -96,6 +172,7 @@ const Editor = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
+
             </div>
         </div>
     )
