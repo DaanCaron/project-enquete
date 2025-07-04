@@ -93,6 +93,7 @@ const updateQuestion = async (questionData: Question, questionId: number) => {
           id: questionId
         },
         data:{
+          id: questionId,
           question: questionData.getQuestion(),
           sequence: questionData.getSequence()
         },

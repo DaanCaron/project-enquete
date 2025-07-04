@@ -61,7 +61,6 @@ questionRouter.post('/add', async (req: Request, res: Response, next: NextFuncti
 questionRouter.put("/update/:questionId", async (req: Request, res: Response, next: NextFunction) =>{
     const questionId = parseInt(req.params.questionId)
     const questionBody: QuestionData = req.body
-    console.log(questionBody)
     try{
         const window = await questionService.updateQuestions(questionBody, questionId)
         res.status(200).json(window)

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
     id: number;
@@ -42,6 +42,14 @@ const ResizableDraggableBox: React.FC<Props> = ({
 
     const [editing, setEditing] = useState(false)
     const [tempText, setTempText] = useState(text);
+    const [committedText, setCommittedText] = useState(text);
+
+    useEffect(() => {
+        if (committedText !== text) {
+            onTextChange?.(id, committedText);
+        }
+    }, [committedText]);
+
 
     //resizing
     const onResizeMouseDown = (e: React.MouseEvent) => {
@@ -92,14 +100,16 @@ const ResizableDraggableBox: React.FC<Props> = ({
         clickStartTime.current = null;
     };
 
+    //text change
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTempText(e.target.value);
     };
 
     const commitText = () => {
         setEditing(false);
-        onTextChange?.(id, tempText);
+        setCommittedText(tempText);
     };
+
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
@@ -134,9 +144,9 @@ const ResizableDraggableBox: React.FC<Props> = ({
                     onKeyDown={handleKeyDown}
                 />
             ) : (
-               <div>
+                <div style={{ pointerEvents: "none" }}>
                     {text}
-                </div> 
+                </div>
             )}
             <div
                 className="absolute w-3 h-3 bg-white border border-gray-500 right-0 bottom-0 cursor-se-resize"

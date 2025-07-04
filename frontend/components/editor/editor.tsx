@@ -55,7 +55,8 @@ const Editor = () => {
         try {
             const res = await questionService.getAllQuestionsBysurveyId(surveyId)
             if (res.ok) {
-                const questionData = await res.json()
+                let questionData = await res.json()
+                questionData = questionData.sort((a: any,b: any) => {return a.sequence - b.sequence})
                 setQuestions(questionData)
                 setSelectedSurveyId(surveyId)
 
@@ -124,8 +125,8 @@ const Editor = () => {
         try {
             const res = await questionService.changeQuestion(questions[selectedQuestion - 1])
             if (res.ok) {
-                const savedWindow = await res.json()
-                windowData.current = null
+                const updatedQuestion = await res.json()
+                console.log(updatedQuestion)
             }
         } catch (error) {
             setMessage({

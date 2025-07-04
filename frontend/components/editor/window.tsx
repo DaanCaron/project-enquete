@@ -44,7 +44,7 @@ const Window: React.FC<WindowProps> = ({
 
         const containerRect = containerRef.current?.getBoundingClientRect();
         const targetRect = (e.target as HTMLElement).getBoundingClientRect();
-
+        
         if (!containerRect) return;
 
         const mouseX = e.clientX - containerRect.left;
@@ -52,6 +52,9 @@ const Window: React.FC<WindowProps> = ({
 
         const elementX = (targetRect.left - containerRect.left);
         const elementY = (targetRect.top - containerRect.top);
+
+        
+
 
         dragOffset.current = {
             x: mouseX - elementX,
@@ -95,30 +98,30 @@ const Window: React.FC<WindowProps> = ({
 
         setRealPos({ x: realX, y: realY });
 
-        if (type === "button") {
-            setWindowObj((prev) => {
-                const newButtons = prev.buttons.map((b) =>
-                    b.id === id ? { ...b, x: realX, y: realY } : b
-                );
-                const updated = { ...prev, buttons: newButtons };
-                onUpdateWindow?.(updated);
-                return updated;
-            });
-        } else if (type === "text") {
-            setWindowObj((prev) => {
-                const updated = { ...prev, text: { ...prev.text, x: realX, y: realY } };
-                onUpdateWindow?.(updated);
-                return updated;
-            });
-        }
+        setWindowObj((prev) => {
+            if (type === "button") {
+                return {
+                    ...prev,
+                    buttons: prev.buttons.map((b) =>
+                        b.id === id ? { ...b, x: realX, y: realY } : b
+                    ),
+                };
+            } else if (type === "text") {
+                return {
+                    ...prev,
+                    text: { ...prev.text, x: realX, y: realY },
+                };
+            }
+            return prev;
+        });
 
     };
 
     const onMouseUp = () => {
         dragItem.current = null;
+        // When drag ends, sync local state to parent
+        onUpdateWindow?.(windowObj);
     };
-
-
 
     return (
         <div

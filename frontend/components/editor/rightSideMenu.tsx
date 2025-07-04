@@ -39,7 +39,7 @@ const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, 
                         onClick={submit}
                         className="rounded-md bg-green-400 hover:bg-green-500 transition-colors duration-150 w-24"
                     >
-                        Submit
+                        Update
                     </button>
                 </div>
             </div>
