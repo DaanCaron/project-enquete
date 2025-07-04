@@ -53,9 +53,6 @@ const Window: React.FC<WindowProps> = ({
         const elementX = (targetRect.left - containerRect.left);
         const elementY = (targetRect.top - containerRect.top);
 
-        
-
-
         dragOffset.current = {
             x: mouseX - elementX,
             y: mouseY - elementY,
@@ -119,9 +116,23 @@ const Window: React.FC<WindowProps> = ({
 
     const onMouseUp = () => {
         dragItem.current = null;
-        // When drag ends, sync local state to parent
         onUpdateWindow?.(windowObj);
     };
+
+    const onRemove = (id: number) => {
+        console.log(windowObj.buttons)
+        setWindowObj((prev) => {
+            return {
+                ...prev,
+                buttons: prev.buttons.filter((b) => b.id !== id)
+            }
+        })
+        const updatedWindow = {
+            ...windowObj,
+            buttons: windowObj.buttons.filter((b) => b.id !== id),
+        }
+        onUpdateWindow?.(updatedWindow)
+    }
 
     return (
         <div
@@ -138,6 +149,7 @@ const Window: React.FC<WindowProps> = ({
         >
             {windowObj.buttons.map((btn) => (
                 <ResizableDraggableBox
+                    onRemove={onRemove} 
                     snaptoGrid={snapToGrid}
                     gridSize={gridSize}
                     key={btn.id}
@@ -149,29 +161,27 @@ const Window: React.FC<WindowProps> = ({
                     onDragStart={(e, id) => onDragStart(e, "button", id)}
                     onResize={(id, newWidth, newHeight) => {
                         setWindowObj((prev) => {
-                            const newButtons = prev.buttons.map((b) =>
-                                b.id === id ? { ...b, width: newWidth, height: newHeight } : b
+                            const newButtons = prev.buttons.map((b) => b.id === id ? { ...b, width: newWidth, height: newHeight } : b
                             );
                             const updated = { ...prev, buttons: newButtons };
                             onUpdateWindow?.(updated);
                             return updated;
                         });
-                    }}
+                    } }
 
                     onTextChange={(id, newText) => {
                         setWindowObj((prev) => {
-                            const newButtons = prev.buttons.map((b) =>
-                                b.id === id ? { ...b, text: newText } : b
+                            const newButtons = prev.buttons.map((b) => b.id === id ? { ...b, text: newText } : b
                             );
                             const updated = { ...prev, buttons: newButtons };
                             onUpdateWindow?.(updated);
                             return updated;
-                        })
-                    }}
-                />
+                        });
+                    } }                />
             ))}
 
             <ResizableDraggableBox
+                onRemove={onRemove} 
                 snaptoGrid={snapToGrid}
                 gridSize={gridSize}
                 {...windowObj.text}
@@ -189,12 +199,11 @@ const Window: React.FC<WindowProps> = ({
                         onUpdateWindow?.(updated);
                         return updated;
                     });
-                }}
+                } }
 
                 onTextChange={(id, newText) => {
-                    onUpdateQuestionText?.(newText)
-                }}
-            />
+                    onUpdateQuestionText?.(newText);
+                } }            />
             <p className="absolute bottom-2 ml-2 transform text-white">{realPos.x}, {realPos.y}</p>
         </div>
     );

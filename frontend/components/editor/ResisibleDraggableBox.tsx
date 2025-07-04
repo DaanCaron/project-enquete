@@ -15,6 +15,7 @@ type Props = {
     snaptoGrid: boolean
     gridSize: number
     onTextChange?: (id: number, newText: string) => void;
+    onRemove: (id: number) => void;
 };
 
 const ResizableDraggableBox: React.FC<Props> = ({
@@ -31,7 +32,8 @@ const ResizableDraggableBox: React.FC<Props> = ({
     type,
     snaptoGrid,
     gridSize,
-    onTextChange
+    onTextChange,
+    onRemove
 }) => {
 
     const isResizing = useRef(false);
@@ -118,6 +120,11 @@ const ResizableDraggableBox: React.FC<Props> = ({
         }
     };
 
+    const handleRemoveClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // prevent drag start when clicking remove
+        onRemove(id);
+    };
+
     return (
         <div
             className={`absolute border ${type === "button" ? "bg-blue-500 text-white" : "bg-transparent border-dashed text-black"
@@ -133,6 +140,18 @@ const ResizableDraggableBox: React.FC<Props> = ({
                 textAlign: "center",
             }}
         >
+            {(!editing && type === "button") && (
+                <div
+                    onClick={handleRemoveClick}
+                    onMouseDown={(e) => e.stopPropagation()} 
+                    className="absolute top-1 right-1 text-red-500 font-bold text-3xl cursor-pointer select-none z-10 leading-none"
+                    title="Remove"
+                    aria-label="Remove box"
+                >
+                    ×
+                </div>
+            )}
+
             {editing ? (
                 <input
                     type="text"
