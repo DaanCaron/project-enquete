@@ -190,8 +190,6 @@ const Editor = () => {
     const addButton = () => {
         if (!questions) { return }
 
-        console.log(questions[selectedQuestion - 1].window.buttons)
-
         const selectedWindow = questions[selectedQuestion - 1].window
         const buttons = selectedWindow.buttons;
         const lastId = buttons.length > 0 ? Math.max(...buttons.map(b => b.id)) : 0;
@@ -223,6 +221,67 @@ const Editor = () => {
         setQuestions(updatedQuestions);
     }
 
+    const addQuestion = async () => {
+        if (!questions) { return }
+        console.log(selectedSurveyId)
+
+        const lastSequence = questions.length > 0
+            ? Math.max(...questions.map(q => q.sequence))
+            : 0;
+
+        const newQuestion: QuestionData = {
+            id: -1,
+            question: "New Question",
+            sequence: lastSequence + 1,
+            answers: [],
+            survey: surveys?.find(s => s.id === selectedSurveyId)!,
+            window: {
+                id: -1,
+                background: "#a5a5a5",
+                buttons: [],
+                text: {
+                    id: -1,
+                    x: 0,
+                    y: 0,
+                    width: 200,
+                    height: 200,
+                    windowId: -1,
+                },
+            },
+        };
+
+        if (selectedSurveyId === null) {
+            setMessage({ message: "No survey selected.", type: "Error" });
+            return;
+        }
+        try {
+            const res = await questionService.createQuestion(newQuestion, selectedSurveyId);
+            if (res.ok) {
+                const createdQuestion = await res.json();
+
+                const updatedQuestions = [...questions, createdQuestion].sort(
+                    (a, b) => a.sequence - b.sequence
+                );
+
+                setQuestions(updatedQuestions);
+                setSelectedQuestion(updatedQuestions.length);
+            } else {
+                setMessage({ message: "Failed to create question.", type: "Error" });
+            }
+        } catch (err) {
+            console.error("Error while creating question:", err);
+            setMessage({ message: "Generic error check logs!", type: "Error" });
+        }
+    }
+
+    const removeQuestion = () => {
+        if (!questions) { return }
+        const lastSequence = questions.length > 0
+            ? Math.max(...questions.map(q => q.sequence))
+            : 0;
+        console.log(lastSequence)
+    }
+
     return (
         <div className="h-screen w-screen flex flex-col justify-center items-center">
             <div className="flex flex-row items-start ">
@@ -251,6 +310,8 @@ const Editor = () => {
                     surveys={surveys}
                     fetchAllQuestionsBySurveyId={fetchAllQuestionsBySurveyId}
                     message={message}
+                    addQuestion={addQuestion}
+                    removeQuestion={removeQuestion}
                 />
             </div>
 

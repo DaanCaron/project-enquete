@@ -30,9 +30,18 @@ const changeQuestion = async (question: QuestionData) => {
     })
 }
 
+const createQuestion = (question: QuestionData, surveyId: number) => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/survey/${surveyId}/question`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(question),
+    });
+};
+
 export default{
     getQuestionBySequenceAndSurveyId,
     getAllQuestions,
     getAllQuestionsBysurveyId,
-    changeQuestion
+    changeQuestion,
+    createQuestion
 }

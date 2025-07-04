@@ -106,10 +106,80 @@ const updateQuestion = async (questionData: Question, questionId: number) => {
   }
 };
 
+const createQuestion = async (question: Question, surveyId: number) => {
+  try {
+    const window = question.getWindow(); // Assuming getter returns Window model or undefined
+
+    // Build the data object dynamically to avoid passing undefined for 'window'
+    const data: any = {
+      question: question.getQuestion(),
+      sequence: question.getSequence(),
+      survey: { connect: { id: surveyId } },
+      answers: {
+        create: question.getAnswers().map((ans) => ({
+          answer: ans.getAnswer(),
+        })),
+      },
+    };
+
+    if (window) {
+      data.window = {
+        create: {
+          background: window.getBackground(),
+          buttons: {
+            create: window.getButtons().map((btn) => ({
+              x: btn.getX(),
+              y: btn.getY(),
+              width: btn.getWidth(),
+              height: btn.getHeight(),
+              text: btn.getText(),
+            })),
+          },
+          text: (() => {
+            const text = window.getText();
+            if (
+              text &&
+              text.getX() !== undefined &&
+              text.getY() !== undefined &&
+              text.getWidth() !== undefined &&
+              text.getHeight() !== undefined
+            ) {
+              return {
+                create: {
+                  x: text.getX(),
+                  y: text.getY(),
+                  width: text.getWidth(),
+                  height: text.getHeight(),
+                },
+              };
+            }
+            return null;
+          })(),
+        },
+      };
+    }
+
+    const createdQuestion = await database.question.create({
+      data,
+      include: {
+        survey: true,
+        window: { include: { buttons: true, text: true } },
+        answers: true,
+      },
+    });
+
+    return Question.from(createdQuestion);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Database error creating question. See server log for details.");
+  }
+};
+
 export default {
   getQuestionBySequenceAndSurveyId,
   getAllQuestions,
   getAllQuestionsBySurveyId,
   getQuestionById,
   updateQuestion,
+  createQuestion
 };

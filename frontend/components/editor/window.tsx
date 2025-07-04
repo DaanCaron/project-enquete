@@ -22,8 +22,8 @@ const Window: React.FC<WindowProps> = ({
     const [windowObj, setWindowObj] = useState(question.window);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const scaleX = previewWidth / 2133; //change values manually for scale
-    const scaleY = previewHeight / 1200;
+    const scaleX = previewWidth / 1920; //change values manually for scale
+    const scaleY = previewHeight / 1080;
     const gridSize = 45
 
     const dragItem = useRef<{ type: "button" | "text"; id: number } | null>(null);
@@ -120,7 +120,6 @@ const Window: React.FC<WindowProps> = ({
     };
 
     const onRemove = (id: number) => {
-        console.log(windowObj.buttons)
         setWindowObj((prev) => {
             return {
                 ...prev,

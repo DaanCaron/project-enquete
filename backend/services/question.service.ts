@@ -1,4 +1,5 @@
 import { Question } from "../models/question"
+import { Window } from "../models/window";
 import questionDb from "../repository/question.db";
 import surveyDb from "../repository/survey.db";
 import { QuestionData } from "../types";
@@ -88,9 +89,39 @@ const updateQuestions = async (question: QuestionData, qid: number) => {
     }
 }
 
+const createQuestionOnSurvey = async (questionData: QuestionData, surveyId: number) => {
+  const survey = await surveyDb.getSurveyById(surveyId);
+
+  if (!survey) {
+    throw new Error('No survey found with given ID');
+  }
+
+  try {
+    const question = new Question({
+      question: questionData.question,
+      sequence: questionData.sequence,
+      survey: survey,
+      window: questionData.window ? Window.from(questionData.window) : undefined,
+    });
+
+    const createdQuestion = await questionDb.createQuestion(question, surveyId);
+
+    if (!createdQuestion) {
+      throw new Error('Failed to create question');
+    }
+
+    return createdQuestion;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error creating question on given survey');
+  }
+};
+
+
 export default {
     getQuestionOnIdAndSurveyId,
     getAllQuestions,
     getAllQuestionsBySurveyId,
-    updateQuestions
+    updateQuestions,
+    createQuestionOnSurvey
 }

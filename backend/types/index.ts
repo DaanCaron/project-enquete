@@ -4,13 +4,14 @@ export type Answer = {
     questionId: number;
 }
 
-export type Button ={
-    id: number;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    text: string;
+export type Button = {
+  id: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  text: string;
+  windowId: number;
 }
 
 export type TextBlock ={

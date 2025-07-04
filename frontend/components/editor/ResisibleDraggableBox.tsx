@@ -33,7 +33,7 @@ const ResizableDraggableBox: React.FC<Props> = ({
     snaptoGrid,
     gridSize,
     onTextChange,
-    onRemove
+    onRemove,
 }) => {
 
     const isResizing = useRef(false);
@@ -51,6 +51,11 @@ const ResizableDraggableBox: React.FC<Props> = ({
             onTextChange?.(id, committedText);
         }
     }, [committedText]);
+
+    useEffect(() => {
+        setTempText(text);
+        setCommittedText(text); // optionally sync committedText too, or just tempText
+    }, [text]);
 
 
     //resizing
@@ -143,7 +148,7 @@ const ResizableDraggableBox: React.FC<Props> = ({
             {(!editing && type === "button") && (
                 <div
                     onClick={handleRemoveClick}
-                    onMouseDown={(e) => e.stopPropagation()} 
+                    onMouseDown={(e) => e.stopPropagation()}
                     className="absolute top-1 right-1 text-red-500 font-bold text-3xl cursor-pointer select-none z-10 leading-none"
                     title="Remove"
                     aria-label="Remove box"
