@@ -75,4 +75,20 @@ questionRouter.put("/update/:questionId", async (req: Request, res: Response, ne
     }
 })
 
+questionRouter.delete("/remove/:questionId", async (req: Request, res: Response, next: NextFunction) =>{
+    const questionId = parseInt(req.params.questionId)
+    try{
+        const question = await questionService.removeQuestion(questionId)
+        res.status(200).json(question)
+    }catch (error){
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Failed to update question', error: error.message });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error', error: String(error) });
+        }
+        // res.status(500).json({message: "Error retriving question with id " + questionId +", on survey " + surveyId + "."})
+    }
+})
+
 export {questionRouter}

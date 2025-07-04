@@ -117,11 +117,33 @@ const createQuestionOnSurvey = async (questionData: QuestionData, surveyId: numb
   }
 };
 
+const removeQuestion = async (questionId: number): Promise<boolean> => {
+  const questionCheck = await questionDb.getQuestionById(questionId);
+
+  if (!questionCheck) {
+    throw new Error('No question found with given ID');
+  }
+
+  try {
+    const result = await questionDb.removeQuestion(questionId);
+
+    if (!result) {
+      throw new Error('Failed to remove question');
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error removing question');
+  }
+};
+
 
 export default {
     getQuestionOnIdAndSurveyId,
     getAllQuestions,
     getAllQuestionsBySurveyId,
     updateQuestions,
-    createQuestionOnSurvey
+    createQuestionOnSurvey,
+    removeQuestion
 }

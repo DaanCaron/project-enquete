@@ -175,11 +175,72 @@ const createQuestion = async (question: Question, surveyId: number) => {
   }
 };
 
+const removeQuestion = async (questionId: number) => {
+  try {
+    const question = await database.question.findUnique({
+      where: { id: questionId },
+      include: {
+        window: {
+          include: {
+            buttons: true,
+            text: true,
+          },
+        },
+        answers: true,
+      },
+    });
+
+    if (!question) {
+      return null;
+    }
+
+    // Delete Answers first
+    if (question.answers.length) {
+      await database.answer.deleteMany({
+        where: { questionId },
+      });
+    }
+
+    // Delete Question second (breaks relation with window)
+    await database.question.delete({
+      where: { id: questionId },
+    });
+
+    if (question.window) {
+      // Delete Buttons
+      if (question.window.buttons.length) {
+        await database.button.deleteMany({
+          where: { windowId: question.window.id },
+        });
+      }
+
+      // Delete Text
+      if (question.window.text) {
+        await database.text.delete({
+          where: { id: question.window.text.id },
+        });
+      }
+
+      // Delete Window last
+      await database.window.delete({
+        where: { id: question.window.id },
+      });
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to delete question and related data");
+  }
+};
+
+
 export default {
   getQuestionBySequenceAndSurveyId,
   getAllQuestions,
   getAllQuestionsBySurveyId,
   getQuestionById,
   updateQuestion,
-  createQuestion
+  createQuestion,
+  removeQuestion
 };

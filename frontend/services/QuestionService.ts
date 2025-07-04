@@ -38,10 +38,18 @@ const createQuestion = (question: QuestionData, surveyId: number) => {
     });
 };
 
+const removeQuestion = ( qid: number) => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/remove/${qid}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+    });
+};
+
 export default{
     getQuestionBySequenceAndSurveyId,
     getAllQuestions,
     getAllQuestionsBysurveyId,
     changeQuestion,
-    createQuestion
+    createQuestion,
+    removeQuestion
 }

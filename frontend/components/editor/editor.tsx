@@ -258,7 +258,6 @@ const Editor = () => {
             const res = await questionService.createQuestion(newQuestion, selectedSurveyId);
             if (res.ok) {
                 const createdQuestion = await res.json();
-
                 const updatedQuestions = [...questions, createdQuestion].sort(
                     (a, b) => a.sequence - b.sequence
                 );
@@ -268,18 +267,33 @@ const Editor = () => {
             } else {
                 setMessage({ message: "Failed to create question.", type: "Error" });
             }
-        } catch (err) {
-            console.error("Error while creating question:", err);
+        } catch (error) {
+            console.error("Error while creating question:", error);
             setMessage({ message: "Generic error check logs!", type: "Error" });
         }
     }
 
-    const removeQuestion = () => {
-        if (!questions) { return }
-        const lastSequence = questions.length > 0
-            ? Math.max(...questions.map(q => q.sequence))
-            : 0;
-        console.log(lastSequence)
+    const removeQuestion = async () => {
+        if (!questions || selectedSurveyId === null) return;
+
+        const questionId = questions[selectedQuestion - 1].id;
+
+        try {
+            const res = await questionService.removeQuestion(questionId);
+            if (res.ok) {
+                await fetchAllQuestionsBySurveyId(selectedSurveyId, true);
+
+                // Optionally adjust selectedQuestion here if needed
+                setSelectedQuestion(prev => Math.min(prev, questions.length - 1 > 0 ? questions.length - 1 : 1));
+
+                setMessage({ message: "Question removed!", type: "success" });
+            } else {
+                setMessage({ message: "Failed to remove question.", type: "Error" });
+            }
+        } catch (error) {
+            console.error("Error while removing question:", error);
+            setMessage({ message: "Generic error, check logs!", type: "Error" });
+        }
     }
 
     return (
@@ -315,7 +329,7 @@ const Editor = () => {
                 />
             </div>
 
-            <div className="flex gap-5 mt-5">
+            <div className="flex gap-5 mt-5 text-black">
                 <button
                     onClick={onBack}
                     disabled={disabledBack}
