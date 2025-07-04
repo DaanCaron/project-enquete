@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import Window from "./window"
-import { QuestionData, Survey, WindowConfig } from "@/types"
+import { Button, QuestionData, Survey, WindowConfig } from "@/types"
 import questionService from "@/services/QuestionService"
 import surveyService from "@/services/surveyService"
 import LeftSideMenu from "./leftSideMenu"
@@ -56,7 +56,7 @@ const Editor = () => {
             const res = await questionService.getAllQuestionsBysurveyId(surveyId)
             if (res.ok) {
                 let questionData = await res.json()
-                questionData = questionData.sort((a: any,b: any) => {return a.sequence - b.sequence})
+                questionData = questionData.sort((a: any, b: any) => { return a.sequence - b.sequence })
                 setQuestions(questionData)
                 setSelectedSurveyId(surveyId)
 
@@ -187,6 +187,41 @@ const Editor = () => {
         setQuestions(updated);
     };
 
+    const addButton = () => {
+        if (!questions) { return }
+
+        console.log(questions[selectedQuestion - 1].window.buttons)
+
+        const selectedWindow = questions[selectedQuestion - 1].window
+        const buttons = selectedWindow.buttons;
+        const lastId = buttons.length > 0 ? Math.max(...buttons.map(b => b.id)) : 0;
+
+        const newButton: Button = {
+            id: lastId + 1,
+            x: 0,
+            y: 0,
+            width: 360,
+            height: 180,
+            text: "New Button",
+        };
+
+        const updatedButtons = [...buttons, newButton];
+
+        const updatedWindow: WindowConfig = {
+            ...selectedWindow,
+            buttons: updatedButtons,
+        };
+
+        windowData.current = updatedWindow;
+
+        const updatedQuestions = [...questions];
+        updatedQuestions[selectedQuestion - 1] = {
+            ...updatedQuestions[selectedQuestion - 1],
+            window: updatedWindow,
+        };
+
+        setQuestions(updatedQuestions);
+    }
 
     return (
         <div className="h-screen w-screen flex flex-col justify-center items-center">
@@ -198,6 +233,7 @@ const Editor = () => {
                             originalColor={questions[selectedQuestion - 1].window.background}
                             changeColor={changeColor}
                             snapToGrid={(state) => setSnapToGrid(state)}
+                            addButton={addButton}
                         />
                         <Window
                             question={questions[selectedQuestion - 1]}
