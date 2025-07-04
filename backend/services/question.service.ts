@@ -1,6 +1,7 @@
 import { Question } from "../models/question"
 import questionDb from "../repository/question.db";
 import surveyDb from "../repository/survey.db";
+import { QuestionData } from "../types";
 
 const getAllQuestions = async (): Promise<Question[] | null> => {
     try{
@@ -59,8 +60,37 @@ const getAllQuestionsBySurveyId = async (surveyId: number): Promise<Question[] |
     }
 }
 
+const updateQuestions = async (question: QuestionData, qid: number) => {
+    const questionCheck = await questionDb.getQuestionById(qid)
+
+    if(!questionCheck){
+        throw new Error('No question found with given ID');
+    }
+
+    try{
+        const questionData: Question = new Question({
+            id: question.id,
+            question: question.question,
+            sequence: question.sequence
+        })
+
+        const questionRes = await questionDb.updateQuestion(questionData, qid)
+
+        if(!questionRes){
+            throw new Error('Error updating given question');
+        }
+        
+        return questionRes
+
+    }catch(error){
+        console.error(error);
+        throw new Error('Error Question with given ID');
+    }
+}
+
 export default {
     getQuestionOnIdAndSurveyId,
     getAllQuestions,
-    getAllQuestionsBySurveyId
+    getAllQuestionsBySurveyId,
+    updateQuestions
 }

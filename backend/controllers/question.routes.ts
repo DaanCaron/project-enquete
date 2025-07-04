@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import questionService from '../services/question.service';
+import { QuestionData } from '../types';
 
 const questionRouter = express.Router()
 
@@ -54,6 +55,24 @@ questionRouter.post('/add', async (req: Request, res: Response, next: NextFuncti
 
     }catch(error){
         res.status(500).json({message: "Error adding event."})
+    }
+})
+
+questionRouter.put("/update/:questionId", async (req: Request, res: Response, next: NextFunction) =>{
+    const questionId = parseInt(req.params.questionId)
+    const questionBody: QuestionData = req.body
+    console.log(questionBody)
+    try{
+        const window = await questionService.updateQuestions(questionBody, questionId)
+        res.status(200).json(window)
+    }catch (error){
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Failed to update question', error: error.message });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error', error: String(error) });
+        }
+        // res.status(500).json({message: "Error retriving question with id " + questionId +", on survey " + surveyId + "."})
     }
 })
 

@@ -23,7 +23,7 @@ const getAllQuestionsBysurveyId = async (survey:number) =>{
 }
 
 const changeQuestion = async (question: QuestionData) => {
-    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/${question.id}`, {
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/update/${question.id}`, {
         method: "PUT",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(question)

@@ -68,8 +68,47 @@ const getAllQuestionsBySurveyId = async (surveyId: number) => {
   }
 };
 
+const getQuestionById = async (questionId: number) => {
+  try {
+    const questionPrisma = await database.question.findUnique({
+      where: {
+        id: questionId,
+      },
+      include: { survey: false, window: false, answers: false },
+    });
+    if (questionPrisma === null) {
+      return null;
+    }
+    return Question.from(questionPrisma);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Database error for events. See server log for details.");
+  }
+};
+
+const updateQuestion = async (questionData: Question, questionId: number) => {
+  try {
+      const questionPrisma = await database.question.update({
+        where: {
+          id: questionId
+        },
+        data:{
+          question: questionData.getQuestion(),
+          sequence: questionData.getSequence()
+        },
+        include: {window: true, survey: true, answers: true}
+      })
+      return Question.from(questionPrisma)
+  } catch (error) {
+    console.error(error);
+    throw new Error("Database error for events. See server log for details.");
+  }
+};
+
 export default {
   getQuestionBySequenceAndSurveyId,
   getAllQuestions,
   getAllQuestionsBySurveyId,
+  getQuestionById,
+  updateQuestion,
 };

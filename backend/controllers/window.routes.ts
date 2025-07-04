@@ -13,7 +13,7 @@ windowRouter.put("/update/:windowId", async (req: Request, res: Response, next: 
     }catch (error){
         console.error(error);
         if (error instanceof Error) {
-            res.status(500).json({ message: 'Failed to delete event', error: error.message });
+            res.status(500).json({ message: 'Failed to update window', error: error.message });
         } else {
             res.status(500).json({ message: 'Internal Server Error', error: String(error) });
         }
