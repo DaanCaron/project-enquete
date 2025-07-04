@@ -7,6 +7,8 @@ type WindowProps = {
     previewWidth: number;
     previewHeight: number;
     onUpdateWindow?: (updatedWindow: QuestionData["window"]) => void;
+    onUpdateQuestionText?: (newText: string) => void;
+    snapToGrid: boolean
 };
 
 const Window: React.FC<WindowProps> = ({
@@ -14,15 +16,19 @@ const Window: React.FC<WindowProps> = ({
     previewWidth,
     previewHeight,
     onUpdateWindow,
+    snapToGrid,
+    onUpdateQuestionText
 }) => {
     const [windowObj, setWindowObj] = useState(question.window);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const scaleX = previewWidth / 1920;
-    const scaleY = previewHeight / 1080;
+    const scaleX = previewWidth / 2133; //change values manually for scale
+    const scaleY = previewHeight / 1200;
+    const gridSize = 45
 
     const dragItem = useRef<{ type: "button" | "text"; id: number } | null>(null);
     const dragOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [realPos, setRealPos] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
         setWindowObj(question.window);
@@ -79,8 +85,15 @@ const Window: React.FC<WindowProps> = ({
         newX = Math.min(Math.max(newX, 0), previewWidth - width * scaleX);
         newY = Math.min(Math.max(newY, 0), previewHeight - height * scaleY);
 
-        const realX = Math.round(newX / scaleX);
-        const realY = Math.round(newY / scaleY);
+        let realX = Math.round(newX / scaleX);
+        let realY = Math.round(newY / scaleY);
+
+        if (snapToGrid) {
+            realX = Math.round(realX / gridSize) * gridSize
+            realY = Math.round(realY / gridSize) * gridSize
+        }
+
+        setRealPos({ x: realX, y: realY });
 
         if (type === "button") {
             setWindowObj((prev) => {
@@ -98,16 +111,19 @@ const Window: React.FC<WindowProps> = ({
                 return updated;
             });
         }
+
     };
 
     const onMouseUp = () => {
         dragItem.current = null;
     };
 
+
+
     return (
         <div
             ref={containerRef}
-            className="relative rounded-lg shadow-lg select-none "
+            className="relative rounded-lg shadow-lg select-none align-text-bottom"
             style={{
                 width: previewWidth,
                 height: previewHeight,
@@ -119,6 +135,8 @@ const Window: React.FC<WindowProps> = ({
         >
             {windowObj.buttons.map((btn) => (
                 <ResizableDraggableBox
+                    snaptoGrid={snapToGrid}
+                    gridSize={gridSize}
                     key={btn.id}
                     {...btn}
                     scaleX={scaleX}
@@ -136,10 +154,23 @@ const Window: React.FC<WindowProps> = ({
                             return updated;
                         });
                     }}
+
+                    onTextChange={(id, newText) => {
+                        setWindowObj((prev) => {
+                            const newButtons = prev.buttons.map((b) =>
+                                b.id === id ? { ...b, text: newText } : b
+                            );
+                            const updated = { ...prev, buttons: newButtons };
+                            onUpdateWindow?.(updated);
+                            return updated;
+                        })
+                    }}
                 />
             ))}
 
             <ResizableDraggableBox
+                snaptoGrid={snapToGrid}
+                gridSize={gridSize}
                 {...windowObj.text}
                 text={question.question}
                 scaleX={scaleX}
@@ -156,7 +187,12 @@ const Window: React.FC<WindowProps> = ({
                         return updated;
                     });
                 }}
+
+                onTextChange={(id, newText) => {
+                    onUpdateQuestionText?.(newText)
+                }}
             />
+            <p className="absolute bottom-2 ml-2 transform text-white">{realPos.x}, {realPos.y}</p>
         </div>
     );
 };

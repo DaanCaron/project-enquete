@@ -7,7 +7,7 @@ const Question: React.FC = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            fetchQuestionBySequenceAndSurvey(2, 6);
+            fetchQuestionBySequenceAndSurvey(1, 6);
         }, 1500);
 
         return () => clearInterval(interval);
@@ -42,21 +42,27 @@ const Question: React.FC = () => {
         return `${Math.max(scale, 10)}px`
     }
 
+    const getHoverClass = (text: string) => {
+        if (text === "Yes" || text === "Ja") return "hover:bg-green-200";
+        if (text === "No" || text === "Nee") return "hover:bg-red-200";
+        return "hover:bg-blue-200";
+    };
+
+
     return (
         <div
             className="h-screen w-screen relative"
             style={{ backgroundColor: window.background || "#1a1941" }}
         >
             <div
-                className="absolute flex items-center justify-center text-center font-bold"
+                className="absolute flex items-center justify-center text-center font-bold bg-[#ffffff3f] border-solid border-8 rounded"
                 style={{
                     left: `${window.text.x}px`,
                     top: `${window.text.y}px`,
                     width: `${window.text.width}px`,
                     height: `${window.text.height}px`,
                     fontSize: getBoxFontSize(window.text.height, window.text.width),
-                    color: "white", // matches draggable box "text-black"
-                    backgroundColor: "transparent",
+                    color: "white",
                 }}
             >
                 {question.question}
@@ -65,14 +71,13 @@ const Question: React.FC = () => {
             {window.buttons.map((button: any) => (
                 <button
                     key={button.id}
-                    className="absolute font-bold rounded hover:bg-gray-200 transition-all flex items-center justify-center text-center"
+                    className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 ${getHoverClass(button.text)}  ${(button.text === "Yes" || button.text === "Ja") ? "border-green-400" : ` ${(button.text === "No" || button.text === "Nee") ? "border-red-400" : "border-blue-400"}`}`}
                     style={{
                         left: `${button.x}px`,
                         top: `${button.y}px`,
                         width: `${button.width}px`,
                         height: `${button.height}px`,
                         fontSize: getBoxFontSize(button.height, button.width),
-                        backgroundColor: "#3B82F6",
                         color: "white",
                     }}
                 >

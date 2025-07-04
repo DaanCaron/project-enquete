@@ -20,6 +20,7 @@ const Editor = () => {
     const [message, setMessage] = useState<{ message: string, type: string } | null>(null)
 
     const windowData = useRef<WindowConfig | null>(null)
+    const [snapToGrid, setSnapToGrid] = useState<boolean>(false)
 
     useEffect(() => {
         setMessage({ message: "", type: "" })
@@ -103,17 +104,37 @@ const Editor = () => {
         }
 
         if (questions) {
-        const updatedQuestions = [...questions]
-        updatedQuestions[selectedQuestion - 1] = {
-            ...updatedQuestions[selectedQuestion - 1],
-            window: { ...updatedWindow }
+            const updatedQuestions = [...questions]
+            updatedQuestions[selectedQuestion - 1] = {
+                ...updatedQuestions[selectedQuestion - 1],
+                window: { ...updatedWindow }
+            }
+            setQuestions(updatedQuestions)
         }
-        setQuestions(updatedQuestions)
-    }
     }
 
     const onSubmit = async () => {
-        console.log(windowData)
+        if (!questions) {
+            setMessage({
+                message: "No questions available to save!",
+                type: "Error"
+            })
+            return
+        }
+        try {
+            const res = await questionService.changeQuestion(questions[selectedQuestion - 1])
+            if (res.ok) {
+                const savedWindow = await res.json()
+                windowData.current = null
+            }
+        } catch (error) {
+            setMessage({
+                message: "Generic error check logs!",
+                type: "Error"
+            })
+            console.error("Failed to update window.", error)
+        }
+
         if (!windowData.current) {
             setMessage({
                 message: "No changes made, did not save!",
@@ -124,7 +145,6 @@ const Editor = () => {
         try {
             const res = await windowService.updateWindow(windowData.current)
             if (res.ok) {
-
                 const savedWindow = await res.json()
                 console.log(savedWindow)
                 setMessage({
@@ -144,17 +164,28 @@ const Editor = () => {
     }
 
     const changeColor = (color: string) => {
-    if (questions) {
-        const updated = [...questions]
-        updated[selectedQuestion - 1].window.background = color
-        setQuestions(updated)
+        if (questions) {
+            const updated = [...questions]
+            updated[selectedQuestion - 1].window.background = color
+            setQuestions(updated)
 
-        const updatedWindow = updated[selectedQuestion - 1].window
-
-        // 💥 Call the same function used when a user makes any other change
-        onUpdateWindow(updatedWindow)
+            const updatedWindow = updated[selectedQuestion - 1].window
+            onUpdateWindow(updatedWindow)
+        }
     }
-}
+
+    const onUpdateQuestionText = (newText: string) => {
+        if (!questions) return;
+
+        const updated = [...questions];
+        updated[selectedQuestion - 1] = {
+            ...updated[selectedQuestion - 1],
+            question: newText,
+        };
+
+        setQuestions(updated);
+    };
+
 
     return (
         <div className="h-screen w-screen flex flex-col justify-center items-center">
@@ -165,12 +196,15 @@ const Editor = () => {
                         <LeftSideMenu
                             originalColor={questions[selectedQuestion - 1].window.background}
                             changeColor={changeColor}
+                            snapToGrid={(state) => setSnapToGrid(state)}
                         />
                         <Window
                             question={questions[selectedQuestion - 1]}
                             previewWidth={1280}
                             previewHeight={720}
                             onUpdateWindow={onUpdateWindow}
+                            snapToGrid={snapToGrid}
+                            onUpdateQuestionText={onUpdateQuestionText}
                         />
                     </>}
 

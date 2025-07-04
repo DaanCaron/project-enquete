@@ -1,3 +1,5 @@
+import { QuestionData } from "@/types"
+
 const getQuestionBySequenceAndSurveyId = async (sequence: number, survey:number) =>{
         return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/${survey}/${sequence}`, {
             method: 'GET',
@@ -20,8 +22,17 @@ const getAllQuestionsBysurveyId = async (survey:number) =>{
         })
 }
 
+const changeQuestion = async (question: QuestionData) => {
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/${question.id}`, {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(question)
+    })
+}
+
 export default{
     getQuestionBySequenceAndSurveyId,
     getAllQuestions,
-    getAllQuestionsBysurveyId
+    getAllQuestionsBysurveyId,
+    changeQuestion
 }
