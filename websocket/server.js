@@ -37,6 +37,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('selectSurvey', sid);
   });
 
+  socket.on('selectGraph', (gid) => {
+    socket.broadcast.emit('selectGraph', gid);
+  });
+
   socket.on('disconnect', () => {
     console.log(`❌ A user disconnected: ${socket.id}`);
     logClientCount();

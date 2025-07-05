@@ -27,11 +27,15 @@ const Admin: React.FC = () => {
     };
 
     const handleSelectSurvey = () => {
-    if (selectedSurvey !== null) {
-        console.log("Selected survey ID:", selectedSurvey);
-        socket.emit('selectSurvey', selectedSurvey);
+        if (selectedSurvey !== null) {
+            console.log("Selected survey ID:", selectedSurvey);
+            socket.emit('selectSurvey', selectedSurvey);
+        }
+    };
+
+    const handleStopSurvey = () => {
+        socket.emit('selectSurvey', 0);
     }
-};
 
     const fetchAllSurveys = async () => {
         try {
@@ -68,6 +72,12 @@ const Admin: React.FC = () => {
                         className="px-6 py-4 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
                     >
                         Start enquete
+                    </button>
+                    <button
+                        onClick={handleStopSurvey}
+                        className="px-6 py-4 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
+                    >
+                        Stop enquete
                     </button>
                 </div>
                 <div className="text-3xl flex gap-5">

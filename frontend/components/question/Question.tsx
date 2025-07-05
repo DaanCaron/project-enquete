@@ -11,24 +11,53 @@ const Question: React.FC = () => {
     const [question, setQuestion] = useState<QuestionData | null>(null)
     const sequence = useRef(1)
     const survey = useRef(0)
+    const qid = useRef(0)
+
+    const handleSelectGraph = () => {
+        console.log("did this")
+        if (qid !== null) {
+            console.log("Selected question ID:", qid.current);
+            socket.emit('selectGraph', qid.current);
+        }
+    };
 
     useEffect(() => {
-        const selectSurvey = (sid: number) => {
-            survey.current = sid
-            sequence.current = 1;
-            fetchQuestionBySequenceAndSurvey(sequence.current, sid);
+        const selectSurvey = async (sid: number) => {
+            if (sid === 0) {
+                survey.current = sid
+                qid.current = 0
+                setQuestion(null);
+                handleSelectGraph();
+            } else {
+                survey.current = sid
+                sequence.current = 1;
+                const success = await fetchQuestionBySequenceAndSurvey(sequence.current, sid);
+                if (success) {
+                    handleSelectGraph();
+                }
+            }
         }
-        const nextquestion = () => {
+        const nextquestion = async () => {
             if (survey.current === 0) return;
-            sequence.current += 1;
-            fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
+
+            const nextSequence = sequence.current + 1;
+            const success = await fetchQuestionBySequenceAndSurvey(nextSequence, survey.current);
+
+            if (success) {
+                sequence.current = nextSequence;
+                handleSelectGraph();
+            }
         };
 
-        const prevQuestion = () => {
-            if (survey.current === 0) return;
-            if (sequence.current > 1) {
-                sequence.current -= 1;
-                fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
+        const prevQuestion = async () => {
+            if (survey.current === 0 || sequence.current <= 1) return;
+
+            const prevSequence = sequence.current - 1;
+            const success = await fetchQuestionBySequenceAndSurvey(prevSequence, survey.current);
+
+            if (success) {
+                sequence.current = prevSequence;
+                handleSelectGraph();
             }
         };
 
@@ -38,15 +67,15 @@ const Question: React.FC = () => {
             fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
         }
 
-        
+
         socket.on('nextQuestion', nextquestion);
         socket.on('prevQuestion', prevQuestion);
         socket.on('updateQuestion', updateQuestion);
         socket.on('selectSurvey', selectSurvey)
 
         if (survey.current !== 0) {
-        fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
-    }
+            fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
+        }
 
         return () => {
             socket.off('nextQuestion', nextquestion);
@@ -57,19 +86,21 @@ const Question: React.FC = () => {
     }, []);
 
 
-    const fetchQuestionBySequenceAndSurvey = async (sequence: number, survey: number) => {
+    const fetchQuestionBySequenceAndSurvey = async (sequence: number, survey: number): Promise<boolean> => {
         try {
-            const res = await questionService.getQuestionBySequenceAndSurveyId(sequence, survey)
+            const res = await questionService.getQuestionBySequenceAndSurveyId(sequence, survey);
             if (res.ok) {
-                const questionData = await res.json()
-                setQuestion(questionData)
+                const questionData = await res.json();
+                qid.current = questionData.id;
+                setQuestion(questionData);
+                return true;
             }
-
         } catch (error) {
-            console.error("Failed to connect to server to get qusetion.");
+            console.error("Failed to connect to server to get question.");
         }
-    }
-    if(survey.current === 0){
+        return false;
+    };
+    if (survey.current === 0) {
         return (
             <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-5xl">
                 <p>Wacht tot een enquete gestart word!</p>
@@ -108,6 +139,8 @@ const Question: React.FC = () => {
             console.error(error)
         }
     }
+
+
 
     return (
         <div

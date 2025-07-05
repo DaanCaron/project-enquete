@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 import { questionRouter } from './controllers/question.routes'
 import { surveyRouter } from './controllers/survey.routes';
 import { windowRouter } from './controllers/window.routes';
+import { answerRouter } from './controllers/answer.routes';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use('/question', questionRouter);
 app.use('/survey', surveyRouter);
 app.use('/window', windowRouter);
+app.use('/answer', answerRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Enquete API is running...' });
