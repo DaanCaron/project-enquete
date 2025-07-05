@@ -7,7 +7,7 @@ const Question: React.FC = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            fetchQuestionBySequenceAndSurvey(1, 6);
+            fetchQuestionBySequenceAndSurvey(2, 6);
         }, 1500);
 
         return () => clearInterval(interval);
@@ -18,7 +18,6 @@ const Question: React.FC = () => {
             const res = await questionService.getQuestionBySequenceAndSurveyId(sequence, survey)
             if (res.ok) {
                 const questionData = await res.json()
-                console.log(questionData)
                 setQuestion(questionData)
             }
 
@@ -47,6 +46,19 @@ const Question: React.FC = () => {
         if (text === "No" || text === "Nee") return "hover:bg-red-200";
         return "hover:bg-blue-200";
     };
+
+    const castVote = async (vote: string) => {
+        console.log(question.id, vote)
+        try {
+            const res = await questionService.castVote(question.id, vote)
+            if(res.ok){
+                const ansData = await res.json()
+                console.log(ansData)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
 
     return (
@@ -80,6 +92,7 @@ const Question: React.FC = () => {
                         fontSize: getBoxFontSize(button.height, button.width),
                         color: "white",
                     }}
+                    onClick={() => castVote(button.text)}
                 >
                     {button.text}
                 </button>

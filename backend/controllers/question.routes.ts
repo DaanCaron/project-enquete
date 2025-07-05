@@ -49,12 +49,20 @@ questionRouter.get('/:surveyId/:questionNumber', async (req: Request, res: Respo
 })
 
 
-questionRouter.post('/add', async (req: Request, res: Response, next: NextFunction) =>{
-    const body = req.body
+questionRouter.post('/vote/:qid/:vote', async (req: Request, res: Response, next: NextFunction) =>{
+    const questionId = parseInt(req.params.qid)
+    const vote = req.params.vote
     try{
-
-    }catch(error){
-        res.status(500).json({message: "Error adding event."})
+        const response = await questionService.castVote(questionId, vote)
+        res.status(200).json(response)
+    }catch (error){
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Failed add vote question', error: error.message });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error', error: String(error) });
+        }
+        // res.status(500).json({message: "Error retriving question with id " + questionId +", on survey " + surveyId + "."})
     }
 })
 

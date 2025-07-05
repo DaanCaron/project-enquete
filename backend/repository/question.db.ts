@@ -1,3 +1,4 @@
+import { Answer } from "../models/answer";
 import { Question } from "../models/question";
 import database from "../util/database";
 
@@ -234,6 +235,22 @@ const removeQuestion = async (questionId: number) => {
   }
 };
 
+const castVote = async (qid: number, vote: string) => {
+  try {
+    const newVote = await database.answer.create({
+      data: {
+        answer: vote,
+        questionId: qid
+      },
+      include: {question: false}
+    })
+    return Answer.from(newVote)
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to delete question and related data");
+  }
+}
+
 
 export default {
   getQuestionBySequenceAndSurveyId,
@@ -242,5 +259,6 @@ export default {
   getQuestionById,
   updateQuestion,
   createQuestion,
-  removeQuestion
+  removeQuestion,
+  castVote
 };

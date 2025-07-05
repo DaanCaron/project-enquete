@@ -45,11 +45,20 @@ const removeQuestion = ( qid: number) => {
     });
 };
 
+const castVote = ( qid: number, vote: string) => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/vote/${qid}/${vote}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+};
+
+
 export default{
     getQuestionBySequenceAndSurveyId,
     getAllQuestions,
     getAllQuestionsBysurveyId,
     changeQuestion,
     createQuestion,
-    removeQuestion
+    removeQuestion,
+    castVote
 }
