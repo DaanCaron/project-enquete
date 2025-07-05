@@ -1,17 +1,47 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import questionService from "../../services/QuestionService"
 import { QuestionData } from "../../types"
+import { io } from 'socket.io-client';
+
+
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
+
 
 const Question: React.FC = () => {
     const [question, setQuestion] = useState<QuestionData | null>(null)
+    const sequence = useRef(1)
+
+    useEffect(() => {
+        const nextquestion = () => {
+            sequence.current += 1;
+            fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+        };
+
+        const prevQuestion = () => {
+            if (sequence.current > 1) {
+                sequence.current -= 1;
+                fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+            }
+        };
+
+        socket.on('nextQuestion', nextquestion);
+        socket.on('prevQuestion', prevQuestion);
+
+        fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+
+        return () => {
+            socket.off('nextQuestion', nextquestion);
+        };
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            fetchQuestionBySequenceAndSurvey(2, 6);
-        }, 1500);
+            fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+        }, 750);
 
         return () => clearInterval(interval);
     }, []);
+
 
     const fetchQuestionBySequenceAndSurvey = async (sequence: number, survey: number) => {
         try {
@@ -50,7 +80,7 @@ const Question: React.FC = () => {
     const castVote = async (vote: string) => {
         try {
             const res = await questionService.castVote(question.id, vote)
-            if(res.ok){
+            if (res.ok) {
                 const ansData = await res.json()
                 console.log(ansData)
             }

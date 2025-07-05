@@ -1,5 +1,3 @@
-import { Button, Survey } from "@/types"
-
 type props = {
     originalColor: string
     changeColor(color: string): void
