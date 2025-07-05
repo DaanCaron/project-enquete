@@ -13,13 +13,19 @@ const Question: React.FC = () => {
     const survey = useRef(0)
 
     useEffect(() => {
-        if(survey.current === 0){return}
+        const selectSurvey = (sid: number) => {
+            survey.current = sid
+            sequence.current = 1;
+            fetchQuestionBySequenceAndSurvey(sequence.current, sid);
+        }
         const nextquestion = () => {
+            if (survey.current === 0) return;
             sequence.current += 1;
             fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
         };
 
         const prevQuestion = () => {
+            if (survey.current === 0) return;
             if (sequence.current > 1) {
                 sequence.current -= 1;
                 fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
@@ -27,20 +33,26 @@ const Question: React.FC = () => {
         };
 
         const updateQuestion = () => {
+            if (survey.current === 0) return;
             console.log("ws connected sucesful")
             fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
         }
 
+        
         socket.on('nextQuestion', nextquestion);
         socket.on('prevQuestion', prevQuestion);
         socket.on('updateQuestion', updateQuestion);
+        socket.on('selectSurvey', selectSurvey)
 
+        if (survey.current !== 0) {
         fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
+    }
 
         return () => {
             socket.off('nextQuestion', nextquestion);
             socket.off('prevQuestion', prevQuestion);
             socket.off('updateQuestion', updateQuestion);
+            socket.off('selectSurvey', selectSurvey)
         };
     }, []);
 
@@ -49,7 +61,6 @@ const Question: React.FC = () => {
         try {
             const res = await questionService.getQuestionBySequenceAndSurveyId(sequence, survey)
             if (res.ok) {
-                console.log("ran this")
                 const questionData = await res.json()
                 setQuestion(questionData)
             }

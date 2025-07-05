@@ -33,6 +33,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('updateQuestion');
   });
 
+  socket.on('selectSurvey', (sid) => {
+    socket.broadcast.emit('selectSurvey', sid);
+  });
+
   socket.on('disconnect', () => {
     console.log(`❌ A user disconnected: ${socket.id}`);
     logClientCount();
