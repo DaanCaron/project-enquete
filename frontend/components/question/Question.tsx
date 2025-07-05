@@ -24,22 +24,22 @@ const Question: React.FC = () => {
             }
         };
 
+        const updateQuestion = () => {
+            console.log("ws connected sucesful")
+            fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+        }
+
         socket.on('nextQuestion', nextquestion);
         socket.on('prevQuestion', prevQuestion);
+        socket.on('updateQuestion', updateQuestion);
 
         fetchQuestionBySequenceAndSurvey(sequence.current, 6);
 
         return () => {
             socket.off('nextQuestion', nextquestion);
+            socket.off('prevQuestion', prevQuestion);
+            socket.off('updateQuestion', updateQuestion);
         };
-    }, []);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetchQuestionBySequenceAndSurvey(sequence.current, 6);
-        }, 750);
-
-        return () => clearInterval(interval);
     }, []);
 
 
@@ -47,6 +47,7 @@ const Question: React.FC = () => {
         try {
             const res = await questionService.getQuestionBySequenceAndSurveyId(sequence, survey)
             if (res.ok) {
+                console.log("ran this")
                 const questionData = await res.json()
                 setQuestion(questionData)
             }
@@ -88,7 +89,6 @@ const Question: React.FC = () => {
             console.error(error)
         }
     }
-
 
     return (
         <div

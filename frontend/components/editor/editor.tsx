@@ -6,6 +6,9 @@ import surveyService from "@/services/surveyService"
 import LeftSideMenu from "./leftSideMenu"
 import windowService from "@/services/windowService"
 import RightSideMenu from "./rightSideMenu"
+import { io } from 'socket.io-client';
+
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
 
 const Editor = () => {
 
@@ -146,6 +149,7 @@ const Editor = () => {
         try {
             const res = await windowService.updateWindow(windowData.current)
             if (res.ok) {
+                socket.emit('updateQuestion');
                 const savedWindow = await res.json()
                 console.log(savedWindow)
                 setMessage({

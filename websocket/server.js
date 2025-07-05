@@ -6,13 +6,20 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*', // Allow React dev server
+    origin: '*',
     methods: ['GET', 'POST']
   }
 });
 
+// Helper to log current client count
+const logClientCount = () => {
+  const count = io.sockets.sockets.size;
+  console.log(`Connected clients: ${count}`);
+};
+
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  console.log(`A user connected: ${socket.id}`);
+  logClientCount();
 
   socket.on('nextQuestion', () => {
     socket.broadcast.emit('nextQuestion');
@@ -22,11 +29,16 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('prevQuestion');
   });
 
+  socket.on('updateQuestion', () => {
+    socket.broadcast.emit('updateQuestion');
+  });
+
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
+    console.log(`❌ A user disconnected: ${socket.id}`);
+    logClientCount();
   });
 });
 
 server.listen(4000, () => {
-  console.log('Socket.IO server running on http://localhost:4000');
+  console.log('🚀 Socket.IO server running on http://localhost:4000');
 });
