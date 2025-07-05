@@ -48,7 +48,6 @@ const Question: React.FC = () => {
     };
 
     const castVote = async (vote: string) => {
-        console.log(question.id, vote)
         try {
             const res = await questionService.castVote(question.id, vote)
             if(res.ok){
