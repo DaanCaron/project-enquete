@@ -2,13 +2,19 @@ import answerService from "@/services/answerService";
 import { Answer } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { io } from 'socket.io-client';
+import { BarChart } from '@mui/x-charts/BarChart';
+
 
 const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
 
 const Graph: React.FC = () => {
     const [qid, setQid] = useState(0)
     const qidRef = useRef(0);
-    const [answers, setAnswers] = useState<Answer[] | null>(null)
+
+    const [answers, setAnswers] = useState<Answer[] | null>(null);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [counts, setCounts] = useState<number[]>([]);
+
     useEffect(() => {
         const selectGraph = (gid: number) => {
             setQid(gid)
@@ -39,7 +45,15 @@ const Graph: React.FC = () => {
 
             if (res.ok) {
                 const ansData = await res.json()
-                console.log(ansData)
+
+                const uniqueCategories = [...new Set(ansData.map((answer: Answer) => answer.answer))] as string[];
+
+                const categoryCounts = uniqueCategories.map(
+                    (cat) => ansData.filter((a: Answer) => a.answer === cat).length
+                );
+
+                setCategories(uniqueCategories);
+                setCounts(categoryCounts);
                 setAnswers(ansData)
             }
         } catch (error) {
@@ -57,10 +71,26 @@ const Graph: React.FC = () => {
 
 
     return (
-        <div>
-            {answers && answers.map((answer, idx) => (
-                <div key={idx}>{JSON.stringify(answer)}</div>
-            ))}
+        <div className="w-full h-full flex justify-center items-center">
+            <div className="w-[50%]">
+                <BarChart
+                    xAxis={[
+                        {
+                            id: 'barCategories',
+                            data: categories,
+                            scaleType: 'band',
+                            label: "Antwoorden",
+                        },
+                    ]}
+                    series={[
+                        {
+                            data: counts,
+                            label: "Aantal stemmen",
+                        },
+                    ]}
+                    height={300}
+                />
+            </div>
         </div>
     )
 }
