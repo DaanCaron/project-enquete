@@ -10,30 +10,32 @@ const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
 const Question: React.FC = () => {
     const [question, setQuestion] = useState<QuestionData | null>(null)
     const sequence = useRef(1)
+    const survey = useRef(0)
 
     useEffect(() => {
+        if(survey.current === 0){return}
         const nextquestion = () => {
             sequence.current += 1;
-            fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+            fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
         };
 
         const prevQuestion = () => {
             if (sequence.current > 1) {
                 sequence.current -= 1;
-                fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+                fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
             }
         };
 
         const updateQuestion = () => {
             console.log("ws connected sucesful")
-            fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+            fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
         }
 
         socket.on('nextQuestion', nextquestion);
         socket.on('prevQuestion', prevQuestion);
         socket.on('updateQuestion', updateQuestion);
 
-        fetchQuestionBySequenceAndSurvey(sequence.current, 6);
+        fetchQuestionBySequenceAndSurvey(sequence.current, survey.current);
 
         return () => {
             socket.off('nextQuestion', nextquestion);
@@ -56,11 +58,17 @@ const Question: React.FC = () => {
             console.error("Failed to connect to server to get qusetion.");
         }
     }
-
-    if (!question) {
+    if(survey.current === 0){
         return (
-            <div className="bg-[#1a1941] h-screen text-white flex justify-center items-center text-2xl">
-                <p>Loading...</p>
+            <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-5xl">
+                <p>Wacht tot een enquete gestart word!</p>
+            </div>
+        );
+    }
+    else if (!question) {
+        return (
+            <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-5xl">
+                <p>Wacht tot een vraag geselecteerd word!</p>
             </div>
         );
     }

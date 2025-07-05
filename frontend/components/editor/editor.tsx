@@ -42,6 +42,9 @@ const Editor = () => {
             }
         }
         doRefetch()
+        return () => {
+            socket.off('updateQuestion');
+        };
     }, [toggle])
 
     useEffect(() => {

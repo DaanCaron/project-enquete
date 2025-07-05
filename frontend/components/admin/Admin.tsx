@@ -6,12 +6,9 @@ const Admin: React.FC = () => {
     const [message, setMessage] = useState('Waiting...');
 
     useEffect(() => {
-        socket.on('buttonClicked', () => {
-            setMessage('Other browser clicked!');
-        });
-
         return () => {
-            socket.off('buttonClicked');
+            socket.off('nextQuestion');
+            socket.off('prevQuestion');
         };
     }, []);
 
@@ -25,11 +22,21 @@ const Admin: React.FC = () => {
         setMessage('You clicked the button');
     };
     return (
-        <div style={{ padding: '2rem' }}>
-            <button onClick={handleClickPrev}>prev me</button>
-            <p>{message}</p>
-            <button onClick={handleClickNext}>next me</button>
-            <p>{message}</p>
+        <div className="h-screen w-full flex flex-col items-center justify-center gap-6">
+            <div className="text-3xl flex gap-5">
+                <button
+                    onClick={handleClickPrev}
+                    className="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
+                >
+                    Vorige vraag
+                </button>
+                <button
+                    onClick={handleClickNext}
+                    className="px-6 py-3 rounded-xl bg-blue-500 text-white font-semibold shadow-md hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
+                >
+                    Volgende vraag
+                </button>
+            </div>
         </div>
     );
 }
