@@ -17,7 +17,7 @@ const Editor = () => {
     const [disabledBack, setDisabledBack] = useState<boolean>(true)
     const [disabledNext, setDisabledNext] = useState<boolean>(false)
     const [surveys, setSurveys] = useState<Survey[] | null>(null)
-    const [selectedSurveyId, setSelectedSurveyId] = useState<number | null>(null)
+    const selectedSurveyIdRef = useRef<number | null>(null)
 
     const [toggle, setToggle] = useState(false);
     const [message, setMessage] = useState<{ message: string, type: string } | null>(null)
@@ -32,8 +32,8 @@ const Editor = () => {
             const surveysData = await fetchAllSurveys()
             if (!surveysData) return
 
-            if (selectedSurveyId !== null) {
-                await fetchAllQuestionsBySurveyId(selectedSurveyId, true)
+            if (selectedSurveyIdRef.current !== null) {
+                await fetchAllQuestionsBySurveyId(selectedSurveyIdRef.current, true)
             } else {
                 const fallbackSurveyId = surveysData[0]?.id
                 if (fallbackSurveyId) {
@@ -64,7 +64,7 @@ const Editor = () => {
                 let questionData = await res.json()
                 questionData = questionData.sort((a: any, b: any) => { return a.sequence - b.sequence })
                 setQuestions(questionData)
-                setSelectedSurveyId(surveyId)
+                selectedSurveyIdRef.current = surveyId
 
                 setSelectedQuestion(prev =>
                     preserveQuestionIndex ? Math.min(prev, questionData.length) : 1
@@ -230,7 +230,7 @@ const Editor = () => {
 
     const addQuestion = async () => {
         if (!questions) { return }
-        console.log(selectedSurveyId)
+        console.log(selectedSurveyIdRef.current)
 
         const lastSequence = questions.length > 0
             ? Math.max(...questions.map(q => q.sequence))
@@ -241,7 +241,7 @@ const Editor = () => {
             question: "New Question",
             sequence: lastSequence + 1,
             answers: [],
-            survey: surveys?.find(s => s.id === selectedSurveyId)!,
+            survey: surveys?.find(s => s.id === selectedSurveyIdRef.current)!,
             window: {
                 id: -1,
                 background: "#a5a5a5",
@@ -257,12 +257,12 @@ const Editor = () => {
             },
         };
 
-        if (selectedSurveyId === null) {
+        if (selectedSurveyIdRef.current === null) {
             setMessage({ message: "No survey selected.", type: "Error" });
             return;
         }
         try {
-            const res = await questionService.createQuestion(newQuestion, selectedSurveyId);
+            const res = await questionService.createQuestion(newQuestion, selectedSurveyIdRef.current);
             if (res.ok) {
                 const createdQuestion = await res.json();
                 const updatedQuestions = [...questions, createdQuestion].sort(
@@ -281,14 +281,14 @@ const Editor = () => {
     }
 
     const removeQuestion = async () => {
-        if (!questions || selectedSurveyId === null) return;
+        if (!questions || selectedSurveyIdRef.current === null) return;
 
         const questionId = questions[selectedQuestion - 1].id;
 
         try {
             const res = await questionService.removeQuestion(questionId);
             if (res.ok) {
-                await fetchAllQuestionsBySurveyId(selectedSurveyId, true);
+                await fetchAllQuestionsBySurveyId(selectedSurveyIdRef.current, true);
 
                 // Optionally adjust selectedQuestion here if needed
                 setSelectedQuestion(prev => Math.min(prev, questions.length - 1 > 0 ? questions.length - 1 : 1));
@@ -333,6 +333,7 @@ const Editor = () => {
                     message={message}
                     addQuestion={addQuestion}
                     removeQuestion={removeQuestion}
+                    selectedSurvey={surveys?.find((survey) => survey.id === selectedSurveyIdRef.current)}
                 />
             </div>
 

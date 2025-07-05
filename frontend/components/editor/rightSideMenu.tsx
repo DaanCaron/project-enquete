@@ -1,4 +1,5 @@
 import { Survey } from "@/types"
+import { useEffect } from "react"
 
 type props = {
     surveys: Survey[] | null
@@ -8,26 +9,36 @@ type props = {
     message: { message: string, type: string } | null
     addQuestion(): void
     removeQuestion(): void
-
+    selectedSurvey?: Survey
 }
 
-const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, reFetch, submit, message, addQuestion, removeQuestion }) => {
+const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, reFetch, submit, message, addQuestion, removeQuestion, selectedSurvey }) => {
+    useEffect(() => {
+
+    }, [selectedSurvey])
+
     return (
         <div className="bg-[#252525]  ml-4 h-full w-64 p-4 rounded shadow-lg flex flex-col justify-between text-white">
             <div>
-                <div className="mt-6 max-h-52 overflow-y-auto px-4 py-2 bg-gray-100 rounded-lg shadow flex flex-col gap-2">
-                    {surveys?.map((survey) => (
-                        <button
-                            key={survey.id}
-                            onClick={() => fetchAllQuestionsBySurveyId(survey.id)}
-                            className="text-left px-4 py-2 rounded-md bg-white text-black hover:bg-blue-100 transition-colors duration-150"
-                        >
-                            {survey.name}
-                        </button>
-                    ))}
+                <div className="w-full max-w-md">
+                    <label htmlFor="survey-select" className="block mb-2 font-medium">
+                        Kies een survey
+                    </label>
+                    <select
+                        id="survey-select"
+                        value={selectedSurvey?.id ?? ""}
+                        onChange={(e) => fetchAllQuestionsBySurveyId(parseInt(e.target.value))}
+                        className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                    >
+                        {surveys?.map((survey) => (
+                            <option key={survey.id} value={survey.id}>
+                                {survey.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="w-full flex justify-between h-28 ">
-                    
+
                     <button
                         onClick={() => removeQuestion()}
                         className="rounded-md bg-red-400 hover:bg-red-500 transition-colors duration-150 w-24 text-white mt-10"
