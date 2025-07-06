@@ -51,7 +51,7 @@ const Admin: React.FC = () => {
     };
 
     return (
-        <div className="h-screen w-full flex flex-col items-center justify-center gap-6">
+        <div className="h-full w-full flex flex-col items-end justify-center gap-6 pr-24">
             <div className="max-w-lg">
                 <div className="flex w-full gap-5 mb-5">
                     <select

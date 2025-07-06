@@ -2,7 +2,13 @@ import answerService from "@/services/answerService";
 import { Answer } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { io } from 'socket.io-client';
-import { BarChart } from '@mui/x-charts/BarChart';
+import * as React from 'react';
+import {
+    GaugeContainer,
+    GaugeValueArc,
+    GaugeReferenceArc,
+    useGaugeState,
+} from '@mui/x-charts/Gauge';
 
 
 const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
@@ -61,10 +67,32 @@ const Graph: React.FC = () => {
         }
     }
 
+    const GaugePointer = () => {
+        const { valueAngle, outerRadius, cx, cy } = useGaugeState();
+
+        if (valueAngle === null) {
+            return null;
+        }
+
+        const target = {
+            x: cx + outerRadius * Math.sin(valueAngle),
+            y: cy - outerRadius * Math.cos(valueAngle),
+        };
+        return (
+            < g >
+                <circle cx={cx} cy={cy} r={5} fill="red" />
+                <path
+                    d={`M ${cx} ${cy} L ${target.x} ${target.y}`}
+                    stroke="red"
+                    strokeWidth={3}
+                />
+            </g >
+        );
+    }
+
     if (qid === 0) {
         return (
             <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-5xl">
-                <p>Wacht tot een enquete gestart word!</p>
             </div>
         );
     }
@@ -73,23 +101,17 @@ const Graph: React.FC = () => {
     return (
         <div className="w-full h-full flex justify-center items-center">
             <div className="w-[50%]">
-                <BarChart
-                    xAxis={[
-                        {
-                            id: 'barCategories',
-                            data: categories,
-                            scaleType: 'band',
-                            label: "Antwoorden",
-                        },
-                    ]}
-                    series={[
-                        {
-                            data: counts,
-                            label: "Aantal stemmen",
-                        },
-                    ]}
-                    height={300}
-                />
+                <GaugeContainer
+                    width={200}
+                    height={200}
+                    startAngle={-110}
+                    endAngle={110}
+                    value={50}
+                >
+                    <GaugeReferenceArc />
+                    <GaugePointer />
+                </GaugeContainer>
+
             </div>
         </div>
     )

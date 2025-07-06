@@ -103,14 +103,13 @@ const Question: React.FC = () => {
     if (survey.current === 0) {
         return (
             <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-5xl">
-                <p>Wacht tot een enquete gestart word!</p>
             </div>
         );
     }
     else if (!question) {
         return (
-            <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-5xl">
-                <p>Wacht tot een vraag geselecteerd word!</p>
+            <div className="bg-[#424242] h-screen text-white flex justify-center items-center text-xl">
+                <p>Wacht tot een vraag geselecteerd wordt! (Als dit sherm zichtbaar is, is er iets misgelopen in de code)</p>
             </div>
         );
     }
