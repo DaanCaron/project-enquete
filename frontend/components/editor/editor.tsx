@@ -317,8 +317,8 @@ const Editor = () => {
                         />
                         <Window
                             question={questions[selectedQuestion - 1]}
-                            previewWidth={1280}
-                            previewHeight={720}
+                            previewWidth={800}
+                            previewHeight={600}
                             onUpdateWindow={onUpdateWindow}
                             snapToGrid={snapToGrid}
                             onUpdateQuestionText={onUpdateQuestionText}

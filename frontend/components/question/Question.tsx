@@ -122,9 +122,9 @@ const Question: React.FC = () => {
     }
 
     const getHoverClass = (text: string) => {
-        if (text === "Yes" || text === "Ja") return "hover:bg-green-200";
-        if (text === "No" || text === "Nee") return "hover:bg-red-200";
-        return "hover:bg-blue-200";
+        if (text === "Yes" || text === "Ja") return "active:bg-green-200";
+        if (text === "No" || text === "Nee") return "active:bg-red-200";
+        return "active:bg-blue-200";
     };
 
     const castVote = async (vote: string) => {

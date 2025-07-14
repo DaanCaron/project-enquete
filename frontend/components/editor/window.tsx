@@ -22,8 +22,8 @@ const Window: React.FC<WindowProps> = ({
     const [windowObj, setWindowObj] = useState(question.window);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const scaleX = previewWidth / 1920; //change values manually for scale
-    const scaleY = previewHeight / 1080;
+    const scaleX = previewWidth / 1024 ; //change values manually for scale
+    const scaleY = previewHeight / 728 ;
     const gridSize = 45
 
     const dragItem = useRef<{ type: "button" | "text"; id: number } | null>(null);
