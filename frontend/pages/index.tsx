@@ -1,10 +1,10 @@
-import Question from "@/components/question/Question";
+//import Question from "@/components/question/Question";
 
 const Home: React.FC = () => {
     
     return (
         <>
-            <Question />
+            <p>Nothing to see here</p>
         </>
     );
 };
