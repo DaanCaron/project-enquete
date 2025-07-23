@@ -22,8 +22,8 @@ const Window: React.FC<WindowProps> = ({
     const [windowObj, setWindowObj] = useState(question.window);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const scaleX = previewWidth / 1024 ; //change values manually for scale
-    const scaleY = previewHeight / 768 ;
+    const scaleX = previewWidth / 1024; //change values manually for scale
+    const scaleY = previewHeight / 768;
     const gridSize = 45
 
     const dragItem = useRef<{ type: "button" | "text"; id: number } | null>(null);
@@ -44,7 +44,7 @@ const Window: React.FC<WindowProps> = ({
 
         const containerRect = containerRef.current?.getBoundingClientRect();
         const targetRect = (e.target as HTMLElement).getBoundingClientRect();
-        
+
         if (!containerRect) return;
 
         const mouseX = e.clientX - containerRect.left;
@@ -148,7 +148,7 @@ const Window: React.FC<WindowProps> = ({
         >
             {windowObj.buttons.map((btn) => (
                 <ResizableDraggableBox
-                    onRemove={onRemove} 
+                    onRemove={onRemove}
                     snaptoGrid={snapToGrid}
                     gridSize={gridSize}
                     key={btn.id}
@@ -159,24 +159,24 @@ const Window: React.FC<WindowProps> = ({
                     type="button"
                     onDragStart={(e, id) => onDragStart(e, "button", id)}
                     onResize={(id, newWidth, newHeight) => {
-    setWindowObj((prev) => {
-        const button = prev.buttons.find((b) => b.id === id);
-        if (!button) return prev;
+                        setWindowObj((prev) => {
+                            const button = prev.buttons.find((b) => b.id === id);
+                            if (!button) return prev;
 
-        const maxWidth = (previewWidth / scaleX) - button.x;
-        const maxHeight = (previewHeight / scaleY) - button.y;
+                            const maxWidth = (previewWidth / scaleX) - button.x;
+                            const maxHeight = (previewHeight / scaleY) - button.y;
 
-        const clampedWidth = Math.min(newWidth, maxWidth);
-        const clampedHeight = Math.min(newHeight, maxHeight);
+                            const clampedWidth = Math.min(newWidth, maxWidth);
+                            const clampedHeight = Math.min(newHeight, maxHeight);
 
-        const newButtons = prev.buttons.map((b) =>
-            b.id === id ? { ...b, width: clampedWidth, height: clampedHeight } : b
-        );
-        const updated = { ...prev, buttons: newButtons };
-        onUpdateWindow?.(updated);
-        return updated;
-    });
-}}
+                            const newButtons = prev.buttons.map((b) =>
+                                b.id === id ? { ...b, width: clampedWidth, height: clampedHeight } : b
+                            );
+                            const updated = { ...prev, buttons: newButtons };
+                            onUpdateWindow?.(updated);
+                            return updated;
+                        });
+                    }}
 
                     onTextChange={(id, newText) => {
                         setWindowObj((prev) => {
@@ -186,11 +186,11 @@ const Window: React.FC<WindowProps> = ({
                             onUpdateWindow?.(updated);
                             return updated;
                         });
-                    } }                />
+                    }} />
             ))}
 
             <ResizableDraggableBox
-                onRemove={onRemove} 
+                onRemove={onRemove}
                 snaptoGrid={snapToGrid}
                 gridSize={gridSize}
                 {...windowObj.text}
@@ -200,26 +200,26 @@ const Window: React.FC<WindowProps> = ({
                 type="text"
                 onDragStart={(e, id) => onDragStart(e, "text", id)}
                 onResize={(id, newWidth, newHeight) => {
-    setWindowObj((prev) => {
-        const text = prev.text;
-        const maxWidth = (previewWidth / scaleX) - text.x;
-        const maxHeight = (previewHeight / scaleY) - text.y;
+                    setWindowObj((prev) => {
+                        const text = prev.text;
+                        const maxWidth = (previewWidth / scaleX) - text.x;
+                        const maxHeight = (previewHeight / scaleY) - text.y;
 
-        const clampedWidth = Math.min(newWidth, maxWidth);
-        const clampedHeight = Math.min(newHeight, maxHeight);
+                        const clampedWidth = Math.min(newWidth, maxWidth);
+                        const clampedHeight = Math.min(newHeight, maxHeight);
 
-        const updated = {
-            ...prev,
-            text: { ...text, width: clampedWidth, height: clampedHeight },
-        };
-        onUpdateWindow?.(updated);
-        return updated;
-    });
-}}
+                        const updated = {
+                            ...prev,
+                            text: { ...text, width: clampedWidth, height: clampedHeight },
+                        };
+                        onUpdateWindow?.(updated);
+                        return updated;
+                    });
+                }}
 
                 onTextChange={(id, newText) => {
                     onUpdateQuestionText?.(newText);
-                } }            />
+                }} />
             <p className="absolute bottom-2 ml-2 transform text-white">{realPos.x}, {realPos.y}</p>
         </div>
     );
