@@ -78,6 +78,7 @@ const updateQuestions = async (question: QuestionData, qid: number) => {
       id: question.id,
       question: question.question,
       sequence: question.sequence,
+      graphStyle: question.graphStyle
     });
 
     const questionRes = await questionDb.updateQuestion(questionData, qid);
@@ -107,6 +108,7 @@ const createQuestionOnSurvey = async (
     const question = new Question({
       question: questionData.question,
       sequence: questionData.sequence,
+      graphStyle: questionData.graphStyle,
       survey: survey,
       window: questionData.window
         ? Window.from(questionData.window)

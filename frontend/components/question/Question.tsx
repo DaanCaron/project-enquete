@@ -9,32 +9,36 @@ const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
 
 const Question: React.FC = () => {
     const [question, setQuestion] = useState<QuestionData | null>(null)
+    const questionRef = useRef<QuestionData | null>(null);
+
     const sequence = useRef(1)
     const survey = useRef(0)
     const qid = useRef(0)
 
-    const handleSelectGraph = () => {
-        console.log("did this")
-        if (qid !== null) {
-            console.log("Selected question ID:", qid.current);
-            socket.emit('selectGraph', qid.current);
+    const handleSelectGraph = (state: boolean) => {
+        console.log(state)
+        if (qid !== null && questionRef.current?.graphStyle) {
+            console.log("Selected question ID:", qid.current, questionRef.current.graphStyle);
+            socket.emit('selectGraph', qid.current, questionRef.current.graphStyle, state);
         }
     };
 
     useEffect(() => {
+        questionRef.current = question;
+    }, [question]);
+
+    useEffect(() => {
         const selectSurvey = async (sid: number) => {
             if (sid === 0) {
+                handleSelectGraph(false)
                 survey.current = sid
                 qid.current = 0
                 setQuestion(null);
-                handleSelectGraph();
             } else {
+                handleSelectGraph(false)
                 survey.current = sid
                 sequence.current = 1;
                 const success = await fetchQuestionBySequenceAndSurvey(sequence.current, sid);
-                if (success) {
-                    handleSelectGraph();
-                }
             }
         }
         const nextquestion = async () => {
@@ -44,8 +48,8 @@ const Question: React.FC = () => {
             const success = await fetchQuestionBySequenceAndSurvey(nextSequence, survey.current);
 
             if (success) {
+                handleSelectGraph(false)
                 sequence.current = nextSequence;
-                handleSelectGraph();
             }
         };
 
@@ -56,8 +60,8 @@ const Question: React.FC = () => {
             const success = await fetchQuestionBySequenceAndSurvey(prevSequence, survey.current);
 
             if (success) {
+                handleSelectGraph(false)
                 sequence.current = prevSequence;
-                handleSelectGraph();
             }
         };
 
@@ -69,6 +73,7 @@ const Question: React.FC = () => {
 
 
         socket.on('nextQuestion', nextquestion);
+        socket.on('toggleGraph', handleSelectGraph)
         socket.on('prevQuestion', prevQuestion);
         socket.on('updateQuestion', updateQuestion);
         socket.on('selectSurvey', selectSurvey)
@@ -92,6 +97,7 @@ const Question: React.FC = () => {
             if (res.ok) {
                 const questionData = await res.json();
                 qid.current = questionData.id;
+                console.log(questionData)
                 setQuestion(questionData);
                 return true;
             }
@@ -121,11 +127,11 @@ const Question: React.FC = () => {
         return `${Math.max(scale, 10)}px`
     }
 
-    const getHoverClass = (text: string) => {
-        if (text === "Yes" || text === "Ja") return "active:bg-green-200";
-        if (text === "No" || text === "Nee") return "active:bg-red-200";
-        return "active:bg-blue-200";
-    };
+    // const getHoverClass = (text: string) => {
+    //     if (text === "Yes" || text === "Ja") return "active:bg-green-200";
+    //     if (text === "No" || text === "Nee") return "active:bg-red-200";
+    //     return "active:bg-blue-200";
+    // };
 
     const castVote = async (vote: string) => {
         try {
@@ -163,7 +169,8 @@ const Question: React.FC = () => {
             {window.buttons.map((button: any) => (
                 <button
                     key={button.id}
-                    className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 ${getHoverClass(button.text)}  ${(button.text === "Yes" || button.text === "Ja") ? "border-green-400" : ` ${(button.text === "No" || button.text === "Nee") ? "border-red-400" : "border-blue-400"}`}`}
+                    // className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 ${getHoverClass(button.text)}  ${(button.text === "Yes" || button.text === "Ja") ? "border-green-400" : ` ${(button.text === "No" || button.text === "Nee") ? "border-red-400" : "border-blue-400"}`}`}
+                    className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 border-blue-400`}
                     style={{
                         left: `${button.x}px`,
                         top: `${button.y}px`,

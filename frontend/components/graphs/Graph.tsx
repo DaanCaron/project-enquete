@@ -9,6 +9,7 @@ import {
     GaugeReferenceArc,
     useGaugeState,
 } from '@mui/x-charts/Gauge';
+import { BarChart } from "@mui/x-charts";
 
 
 const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
@@ -17,15 +18,20 @@ const Graph: React.FC = () => {
     const [qid, setQid] = useState(0)
     const qidRef = useRef(0);
 
+    const [graphStyle, setGraphStyle] = useState<string>("")
+
+    const [state, setState] = useState<boolean>(false)
     const [answers, setAnswers] = useState<Answer[] | null>(null);
     const [categories, setCategories] = useState<string[]>([]);
     const [counts, setCounts] = useState<number[]>([]);
 
     useEffect(() => {
-        const selectGraph = (gid: number) => {
+        const selectGraph = (gid: number, graphStyle: string, state: boolean) => {
             setQid(gid)
+            setState(state)
+            setGraphStyle(graphStyle)
             qidRef.current = gid;
-            console.log(gid)
+            console.log(gid, graphStyle, state)
         }
 
         socket.on('selectGraph', selectGraph)
@@ -43,7 +49,7 @@ const Graph: React.FC = () => {
         }, 500);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [state, qid, graphStyle]);
 
     const fetchAllAnswersByQuestionId = async (qid: number) => {
         try {
@@ -99,20 +105,44 @@ const Graph: React.FC = () => {
 
 
     return (
-        <div className="w-full h-full flex justify-center items-center">
-            <div className="w-[50%]">
-                <GaugeContainer
-                    width={200}
-                    height={200}
-                    startAngle={-110}
-                    endAngle={110}
-                    value={50}
-                >
-                    <GaugeReferenceArc />
-                    <GaugePointer />
-                </GaugeContainer>
+        <div>
+            {!state ||
+                <div className="w-full h-full flex justify-center items-center">
+                    <div className="w-[50%]">
+                        {graphStyle === "hist" &&
+                            <BarChart
+                                xAxis={[
+                                    {
+                                        id: 'barCategories',
+                                        data: categories,
+                                        scaleType: 'band',
+                                        label: "Antwoorden",
+                                    },
+                                ]}
+                                series={[
+                                    {
+                                        data: counts,
+                                        label: "Aantal stemmen",
+                                    },
+                                ]}
+                                height={300}
+                            />
+                        }
+                        {graphStyle === 'gauge' &&
+                            <GaugeContainer
+                                width={200}
+                                height={200}
+                                startAngle={-110}
+                                endAngle={110}
+                                value={50}
+                            >
+                                <GaugeReferenceArc />
+                                <GaugePointer />
+                            </GaugeContainer>
+                        }
+                    </div>
+                </div>}
 
-            </div>
         </div>
     )
 }

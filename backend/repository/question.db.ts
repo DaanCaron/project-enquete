@@ -96,7 +96,8 @@ const updateQuestion = async (questionData: Question, questionId: number) => {
         data:{
           id: questionId,
           question: questionData.getQuestion(),
-          sequence: questionData.getSequence()
+          sequence: questionData.getSequence(),
+          graphStyle: questionData.getGraphStyle()
         },
         include: {window: true, survey: true, answers: true}
       })

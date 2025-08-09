@@ -182,6 +182,16 @@ const Editor = () => {
         }
     }
 
+    const changeGraph = (graphStyle: string) => {
+        if(questions){
+            const updated = [...questions]
+            updated[selectedQuestion - 1].graphStyle = graphStyle
+            setQuestions(updated)
+
+            onSubmit()
+        }
+    }
+
     const onUpdateQuestionText = (newText: string) => {
         if (!questions) return;
 
@@ -239,6 +249,7 @@ const Editor = () => {
         const newQuestion: QuestionData = {
             id: -1,
             question: "New Question",
+            graphStyle: "hist",
             sequence: lastSequence + 1,
             answers: [],
             survey: surveys?.find(s => s.id === selectedSurveyIdRef.current)!,
@@ -314,6 +325,8 @@ const Editor = () => {
                             changeColor={changeColor}
                             snapToGrid={(state) => setSnapToGrid(state)}
                             addButton={addButton}
+                            selectedGraph={questions[selectedQuestion - 1].graphStyle}
+                            changeGraph={changeGraph}
                         />
                         <Window
                             question={questions[selectedQuestion - 1]}

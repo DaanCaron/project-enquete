@@ -12,6 +12,7 @@ export class Question {
     private id?: number | null;
     private question: string;
     private sequence: number;
+    private graphStyle: string;
     
     private answers: Answer[];    
     private survey?: Survey
@@ -24,6 +25,7 @@ export class Question {
       answers?: Answer[];
       survey?: Survey
       window?: Window
+      graphStyle: string
     }) {
       this.id = params.id;
       this.question = params.question;
@@ -31,6 +33,7 @@ export class Question {
       this.answers = params.answers ?? [];
       this.survey = params.survey
       this.window = params.window
+      this.graphStyle = params.graphStyle
     } 
 
     static from(data: QuestionPrisma & { answers?: AnswerPrisma[], survey?: SurveyPrisma, window?: WindowPrisma }): Question {
@@ -38,6 +41,7 @@ export class Question {
         id: data?.id,
         question: data.question,
         sequence: data.sequence,
+        graphStyle: data.graphStyle,
         answers: data.answers
           ? data.answers.map((answer) => Answer.from(answer))
           : [],
@@ -69,6 +73,9 @@ export class Question {
     public getWindow(){
       return this.window
     } 
+    public getGraphStyle(){
+      return this.graphStyle
+    }
 
     // Setters
     public setId(id: number): void {

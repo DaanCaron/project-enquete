@@ -13,5 +13,15 @@ answerRouter.get('/:qid', async (req: Request, res: Response, next: NextFunction
     }
 })
 
+answerRouter.delete('/:qid/remove/all', async (req: Request, res: Response, next: NextFunction) =>{
+    const qid = parseInt(req.params.qid)
+    try{
+        const response = await answerService.removeAllAnswersForQuestion(qid)
+        res.status(200).json(response)
+    }catch(error){
+        res.status(500).json({message: "Error removing all anwers for given question."})
+    }
+})
+
 
 export {answerRouter}

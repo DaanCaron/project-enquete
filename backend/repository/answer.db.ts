@@ -19,6 +19,23 @@ const getAllAnswersByQuestionId = async (qid: number) => {
     }
 }
 
+const removeAllAnswersForQuestion = async (qid: number) => {
+    try{
+        const answerPrisma = await database.answer.deleteMany({
+            where:{
+                questionId: qid
+            }
+        })
+
+        return answerPrisma.count; 
+        
+    }catch(error){
+        console.error(error);
+        throw new Error("Database error for events. See server log for details.");
+    }
+}
+
 export default {
-    getAllAnswersByQuestionId
+    getAllAnswersByQuestionId,
+    removeAllAnswersForQuestion
 }

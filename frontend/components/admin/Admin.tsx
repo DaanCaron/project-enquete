@@ -1,12 +1,15 @@
+import answerService from "@/services/answerService";
+import QuestionService from "@/services/QuestionService";
 import surveyService from "@/services/surveyService";
-import { Survey } from "@/types";
-import { useState, useEffect } from "react";
+import { QuestionData, Survey } from "@/types";
+import { useState, useEffect, useRef } from "react";
 import { io } from 'socket.io-client';
 
 const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
 const Admin: React.FC = () => {
     const [surveys, setSurveys] = useState<Survey[] | null>(null)
     const [selectedSurvey, setSelectedSurvey] = useState<number | null>(null);
+    let state = false
 
     useEffect(() => {
         fetchAllSurveys()
@@ -19,21 +22,46 @@ const Admin: React.FC = () => {
 
 
     const handleClickNext = () => {
+        state = false
         socket.emit('nextQuestion');
     };
 
     const handleClickPrev = () => {
+        state = false
         socket.emit('prevQuestion');
     };
 
-    const handleSelectSurvey = () => {
+    const removeAllAnswersFromSurvey = async () => {
         if (selectedSurvey !== null) {
+            const res = await QuestionService.getAllQuestionsBysurveyId(selectedSurvey)
+            const questions: QuestionData[] = await res.json()
+
+            for (let index = 0; index < questions.length; index++) {
+                const res = await answerService.removeAllAnswersForQuestion(questions[index].id)
+                const ans = await res.json()
+                console.log(ans)
+            }
+        }
+    }
+
+
+    const handleSelectSurvey = () => {
+        state = false
+        if (selectedSurvey !== null) {
+            removeAllAnswersFromSurvey()
             console.log("Selected survey ID:", selectedSurvey);
             socket.emit('selectSurvey', selectedSurvey);
         }
     };
 
+    const handleToggleGraph = () => {
+        state = !state
+        console.log(state)
+        socket.emit('toggleGraph', state)
+    }
+
     const handleStopSurvey = () => {
+        state = false
         socket.emit('selectSurvey', 0);
     }
 
@@ -80,7 +108,7 @@ const Admin: React.FC = () => {
                         Stop enquete
                     </button>
                 </div>
-                <div className="text-3xl flex gap-5">
+                <div className="text-3xl flex gap-5 mb-5">
                     <button
                         onClick={handleClickPrev}
                         className="px-6 py-6 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
@@ -92,6 +120,14 @@ const Admin: React.FC = () => {
                         className="px-6 py-6 rounded-xl bg-blue-500 text-white font-semibold shadow-md hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
                     >
                         Volgende vraag
+                    </button>
+                </div>
+                <div className="text-3xl flex gap-5">
+                    <button
+                        onClick={handleToggleGraph}
+                        className="px-6 py-6 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
+                    >
+                        Toggle grafiek voor actieve vraag
                     </button>
                 </div>
             </div>

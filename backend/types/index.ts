@@ -43,4 +43,5 @@ export type QuestionData ={
     answers: Answer[];
     survey: Survey;
     window: WindowConfig;
+    graphStyle: string
 }

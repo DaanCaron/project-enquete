@@ -37,8 +37,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('selectSurvey', sid);
   });
 
-  socket.on('selectGraph', (gid) => {
-    socket.broadcast.emit('selectGraph', gid);
+  socket.on('toggleGraph', (state) => {
+    socket.broadcast.emit('toggleGraph', state)
+  })
+
+  socket.on('selectGraph', (gid, graphStyle, state) => {
+    socket.broadcast.emit('selectGraph', gid, graphStyle, state);
   });
 
   socket.on('disconnect', () => {

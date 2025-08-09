@@ -3,9 +3,11 @@ type props = {
     changeColor(color: string): void
     snapToGrid(state: boolean): void
     addButton(): void
+    selectedGraph: string
+    changeGraph(graph: string): void
 }
 
-const LeftSideMenu: React.FC<props> = ({ originalColor, changeColor, snapToGrid, addButton}) => {
+const LeftSideMenu: React.FC<props> = ({ originalColor, changeColor, snapToGrid, addButton, selectedGraph, changeGraph}) => {
     return (
         <div className="bg-[#252525] mr-4 h-full w-64 p-4 rounded shadow-lg flex flex-col justify-between">
             <label className="flex flex-col items-center text-white font-medium gap-2">
@@ -32,6 +34,25 @@ const LeftSideMenu: React.FC<props> = ({ originalColor, changeColor, snapToGrid,
                         Add a button!
                     </button>
                 </label>
+                <div className="w-44 max-w-md items-center mt-11">
+                    <label htmlFor="survey-select" className="block mb-2 font-medium">
+                        Kies een grafiek
+                    </label>
+                    <select  
+                        id="graph-select"
+                        value={selectedGraph ?? ""}
+                        onChange={(e) => changeGraph(e.target.value)}
+                        className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                    >
+                        <option value="gauge">
+                            gauge
+                        </option>
+                        <option value="hist">
+                            histogram
+                        </option>
+                    </select>
+                </div>
+                
             </label>
         </div>
     )
