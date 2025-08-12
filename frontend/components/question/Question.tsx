@@ -170,7 +170,7 @@ const Question: React.FC = () => {
                 <button
                     key={button.id}
                     // className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 ${getHoverClass(button.text)}  ${(button.text === "Yes" || button.text === "Ja") ? "border-green-400" : ` ${(button.text === "No" || button.text === "Nee") ? "border-red-400" : "border-blue-400"}`}`}
-                    className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 border-blue-400`}
+                    className={`absolute font-bold rounded transition-all flex items-center justify-center text-center bg-[#ffffff3f] border-solid border-8 border-blue-400 active:bg-blue-200`}
                     style={{
                         left: `${button.x}px`,
                         top: `${button.y}px`,
