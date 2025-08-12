@@ -4,10 +4,12 @@ export default function MiddleFillGauge({
   value,
   maxValue = 100,
   size = 200,
+  height = 120,
 }: {
   value: number;
   maxValue?: number;
   size?: number;
+  height?: number
 }) {
   const centerAngle = 90; // pointing up
   const totalAngle = 180; // gauge span
@@ -44,7 +46,7 @@ export default function MiddleFillGauge({
   const pointerY = cy - pointerLength * Math.sin(pointerAngleRad); // y is inverted in SVG
 
   return (
-    <svg width={size} height={size}>
+    <svg width={size} height={height}>
       {/* Background arc */}
       <Sector
         cx={cx}

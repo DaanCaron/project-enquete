@@ -26,7 +26,7 @@ const Graph: React.FC = () => {
     const [categories, setCategories] = useState<string[]>([]);
     const [counts, setCounts] = useState<number[]>([]);
     const [avg, setAvg] = useState<number>(50)
-    
+
 
     useEffect(() => {
         const selectGraph = (gid: number, graphStyle: string, state: boolean) => {
@@ -78,12 +78,12 @@ const Graph: React.FC = () => {
                         setAnswers(ansData)
                     }
                     else if (graphStyle === 'gauge') {
-                        for(let i = 0; i < ansData.length; i++){
+                        for (let i = 0; i < ansData.length; i++) {
                             allWeights.push(ansData[i].weight)
                             total += ansData[i].weight
                         }
 
-                        if(allWeights.length === 0 ){
+                        if (allWeights.length === 0) {
                             setAvg(50)
                             return
                         }
@@ -97,7 +97,7 @@ const Graph: React.FC = () => {
         }
     }
 
- const GaugePointer = () => {
+    const GaugePointer = () => {
         const { valueAngle, outerRadius, cx, cy } = useGaugeState();
         if (valueAngle === null) return null;
         const target = {
@@ -151,7 +151,7 @@ const Graph: React.FC = () => {
                         />
                     )}
                     {graphStyle === 'gauge' && (
-                        <div className="flex justify-center">
+                        <div className="flex flex-col justify-evenly items-center">
                             {/* <GaugeContainer
                                 width={250}
                                 height={250}
@@ -165,7 +165,7 @@ const Graph: React.FC = () => {
                                 <GaugePointer />
                             </GaugeContainer> */}
                             <MiddleFillGauge value={avg} />
-{Math.round(avg)}/100
+                            <p className="text-white text-3xl">{Math.round(avg)}/100</p>
                         </div>
                     )}
                 </div>
