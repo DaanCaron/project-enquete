@@ -218,9 +218,16 @@ const Editor = () => {
             width: 360,
             height: 180,
             text: "New Button",
+            weight: 0
         };
 
         const updatedButtons = [...buttons, newButton];
+
+        for(let i = 0; i < updatedButtons.length; i++){
+            updatedButtons[i].weight = Math.round((100 / (updatedButtons.length - 1)) * i)
+        }
+
+        console.log(updatedButtons)
 
         const updatedWindow: WindowConfig = {
             ...selectedWindow,

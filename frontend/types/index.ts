@@ -2,6 +2,7 @@ export type Answer = {
     id: number;
     answer: string;
     questionId: number;
+    weight: number
 }
 
 export type Button ={
@@ -11,6 +12,7 @@ export type Button ={
     width: number;
     height: number;
     text: string;
+    weight: number
 }
 
 export type TextBlock ={

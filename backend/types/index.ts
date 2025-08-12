@@ -1,5 +1,6 @@
 export type Answer = {
     id: number;
+    weight: number
     answer: string;
     questionId: number;
 }
@@ -12,6 +13,7 @@ export type Button = {
   height: number;
   text: string;
   windowId: number;
+  weight: number
 }
 
 export type TextBlock ={

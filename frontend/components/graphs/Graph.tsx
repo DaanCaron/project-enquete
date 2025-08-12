@@ -132,9 +132,9 @@ const Graph: React.FC = () => {
                             <GaugeContainer
                                 width={200}
                                 height={200}
-                                startAngle={-110}
-                                endAngle={110}
-                                value={50}
+                                startAngle={-90}
+                                endAngle={90}
+                                value={100}
                             >
                                 <GaugeReferenceArc />
                                 <GaugePointer />

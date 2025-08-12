@@ -8,10 +8,11 @@ export class Button {
     private width: number
     private height: number
     private text: string
+    private weight: number
 
     private window?: Window
 
-    constructor(params: {id?: number,  x: number, y: number, width: number, height: number, text: string, window?: Window}){
+    constructor(params: {id?: number,  x: number, y: number, width: number, height: number, text: string, window?: Window, weight: number}){
         this.id = params.id
         this.x = params.x
         this.y = params.y
@@ -19,6 +20,7 @@ export class Button {
         this.height = params.height
         this.text = params.text
         this.window = params.window
+        this.weight = params.weight
     }
 
     static from(data: ButtonPrisma & {window? : WindowPrisma}): Button{
@@ -29,7 +31,8 @@ export class Button {
             width: data.width,
             height: data.height,
             text: data.text,
-            window: data.window ? Window.from(data.window) : undefined
+            window: data.window ? Window.from(data.window) : undefined,
+            weight: data.weight
         })
     }
 
@@ -61,6 +64,10 @@ export class Button {
         return this.window
     }
 
+    public getWeight(){
+        return this.weight
+    }
+
 
     public setId(id: number){
         this.id = id
@@ -88,5 +95,9 @@ export class Button {
 
     public setWindow(window: Window){
         this.window = window
+    }
+
+    public setWeight(weight: number){
+        this.weight = weight
     }
 }

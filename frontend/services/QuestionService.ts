@@ -45,8 +45,8 @@ const removeQuestion = ( qid: number) => {
     });
 };
 
-const castVote = ( qid: number, vote: string) => {
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/vote/${qid}/${vote}`, {
+const castVote = ( qid: number, vote: string, weight: number) => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/question/vote/${qid}/${vote}/${weight}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });

@@ -149,7 +149,7 @@ const removeQuestion = async (questionId: number): Promise<boolean> => {
   }
 };
 
-const castVote = async (qid: number, vote: string) => {
+const castVote = async (qid: number, vote: string, weight: number) => {
   const questionCheck = await questionDb.getQuestionById(qid);
 
   if (!questionCheck) {
@@ -157,7 +157,7 @@ const castVote = async (qid: number, vote: string) => {
   }
 
   try {
-    const res = await questionDb.castVote(qid, vote)
+    const res = await questionDb.castVote(qid, vote, weight)
 
     if (!res) {
       throw new Error("Error adding vote to question");

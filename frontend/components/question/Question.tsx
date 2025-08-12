@@ -133,9 +133,9 @@ const Question: React.FC = () => {
     //     return "active:bg-blue-200";
     // };
 
-    const castVote = async (vote: string) => {
+    const castVote = async (vote: string, weight: number) => {
         try {
-            const res = await questionService.castVote(question.id, vote)
+            const res = await questionService.castVote(question.id, vote, weight)
             if (res.ok) {
                 const ansData = await res.json()
                 console.log(ansData)
@@ -179,7 +179,7 @@ const Question: React.FC = () => {
                         fontSize: getBoxFontSize(button.height, button.width),
                         color: "white",
                     }}
-                    onClick={() => castVote(button.text)}
+                    onClick={() => castVote(button.text, button.weight)}
                 >
                     {button.text}
                 </button>

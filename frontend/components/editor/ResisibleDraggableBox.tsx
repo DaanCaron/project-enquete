@@ -9,6 +9,7 @@ type Props = {
     text: string;
     scaleX: number;
     scaleY: number;
+    weight: number
     onDragStart: (e: React.MouseEvent, id: number) => void;
     onResize: (id: number, newWidth: number, newHeight: number) => void;
     type: "button" | "text";
@@ -34,6 +35,7 @@ const ResizableDraggableBox: React.FC<Props> = ({
     gridSize,
     onTextChange,
     onRemove,
+    weight
 }) => {
 
     const isResizing = useRef(false);
@@ -146,7 +148,7 @@ const ResizableDraggableBox: React.FC<Props> = ({
             }}
         >
             {(!editing && type === "button") && (
-                <div
+                <><div
                     onClick={handleRemoveClick}
                     onMouseDown={(e) => e.stopPropagation()}
                     className="absolute top-1 right-1 text-red-500 font-bold text-3xl cursor-pointer select-none z-10 leading-none"
@@ -155,6 +157,10 @@ const ResizableDraggableBox: React.FC<Props> = ({
                 >
                     ×
                 </div>
+                    <p className="absolute bottom-1 right-1 text-base text-white ml-1 mb-1 select-none z-10 leading-none">
+                        gewicht: {weight}
+                    </p>
+                </>
             )}
 
             {editing ? (

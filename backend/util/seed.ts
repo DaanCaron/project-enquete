@@ -22,8 +22,8 @@ const main = async () => {
       background: "#6765f0",
       buttons: {
         create: [
-          { x: 700, y: 500, width: 200, height: 100, text: "Yes" },
-          { x: 1000, y: 500, width: 200, height: 100, text: "No" },
+          { x: 700, y: 500, width: 200, height: 100, text: "Yes", weight: 100 },
+          { x: 1000, y: 500, width: 200, height: 100, text: "No", weight: 0 },
         ],
       },
       text: {
@@ -47,14 +47,6 @@ const main = async () => {
       window: {
         connect: { id: window1.id },
       },
-      answers: {
-        create: [
-          { answer: "Yes" },
-          { answer: "No" },
-          { answer: "Not sure" },
-          { answer: "Yes" },
-        ],
-      },
     },
   });
 
@@ -63,9 +55,9 @@ const main = async () => {
       background: "#07f5f0",
       buttons: {
         create: [
-          { x: 650, y: 500, width: 200, height: 100, text: "Yes" },
-          { x: 1100, y: 500, width: 200, height: 100, text: "No" },
-          { x: 1100, y: 500, width: 200, height: 100, text: "Non opinion" },
+          { x: 650, y: 500, width: 200, height: 100, text: "Yes", weight: 100},
+          { x: 1100, y: 500, width: 200, height: 100, text: "No", weight: 0 },
+          { x: 1100, y: 500, width: 200, height: 100, text: "Non opinion", weight: 50 },
         ],
       },
       text: {
@@ -89,14 +81,6 @@ const main = async () => {
       window: {
         connect: { id: window2.id },
       },
-      answers: {
-        create: [
-          { answer: "Yes" },
-          { answer: "No" },
-          { answer: "Not sure" },
-          { answer: "Yes" },
-        ],
-      },
     },
   });
 
@@ -111,8 +95,8 @@ const main = async () => {
       background: "#ef65f0",
       buttons: {
         create: [
-          { x: 700, y: 500, width: 200, height: 100, text: "Yes" },
-          { x: 1000, y: 500, width: 200, height: 100, text: "No" },
+          { x: 700, y: 500, width: 200, height: 100, text: "Yes", weight: 100 },
+          { x: 1000, y: 500, width: 200, height: 100, text: "No", weight: 0 },
         ],
       },
       text: {
@@ -135,14 +119,6 @@ const main = async () => {
       },
       window: {
         connect: { id: window3.id },
-      },
-      answers: {
-        create: [
-          { answer: "Yes" },
-          { answer: "No" },
-          { answer: "Not sure" },
-          { answer: "Yes" },
-        ],
       },
     },
   });

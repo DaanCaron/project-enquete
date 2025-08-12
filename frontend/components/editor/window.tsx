@@ -22,8 +22,8 @@ const Window: React.FC<WindowProps> = ({
     const [windowObj, setWindowObj] = useState(question.window);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const scaleX = previewWidth / 1024 ; //change values manually for scale
-    const scaleY = previewHeight / 728 ;
+    const scaleX = previewWidth / 1024; //change values manually for scale
+    const scaleY = previewHeight / 728;
     const gridSize = 45
 
     const dragItem = useRef<{ type: "button" | "text"; id: number } | null>(null);
@@ -44,7 +44,7 @@ const Window: React.FC<WindowProps> = ({
 
         const containerRect = containerRef.current?.getBoundingClientRect();
         const targetRect = (e.target as HTMLElement).getBoundingClientRect();
-        
+
         if (!containerRect) return;
 
         const mouseX = e.clientX - containerRect.left;
@@ -120,15 +120,23 @@ const Window: React.FC<WindowProps> = ({
     };
 
     const onRemove = (id: number) => {
-        setWindowObj((prev) => {
-            return {
-                ...prev,
-                buttons: prev.buttons.filter((b) => b.id !== id)
-            }
-        })
+
+        const updatedButtons = windowObj.buttons.filter((b) => b.id !== id);
+
+        for (let i = 0; i < updatedButtons.length; i++) {
+            updatedButtons[i] = {
+                ...updatedButtons[i],
+                weight: (100 / (updatedButtons.length - 1)) * i
+            };
+        }
+
+        setWindowObj((prev) => ({
+            ...prev,
+            buttons: updatedButtons
+        }));
         const updatedWindow = {
             ...windowObj,
-            buttons: windowObj.buttons.filter((b) => b.id !== id),
+            buttons: updatedButtons,
         }
         onUpdateWindow?.(updatedWindow)
     }
@@ -148,7 +156,7 @@ const Window: React.FC<WindowProps> = ({
         >
             {windowObj.buttons.map((btn) => (
                 <ResizableDraggableBox
-                    onRemove={onRemove} 
+                    onRemove={onRemove}
                     snaptoGrid={snapToGrid}
                     gridSize={gridSize}
                     key={btn.id}
@@ -156,6 +164,7 @@ const Window: React.FC<WindowProps> = ({
                     scaleX={scaleX}
                     scaleY={scaleY}
                     text={btn.text}
+                    weight={btn.weight}
                     type="button"
                     onDragStart={(e, id) => onDragStart(e, "button", id)}
                     onResize={(id, newWidth, newHeight) => {
@@ -166,7 +175,7 @@ const Window: React.FC<WindowProps> = ({
                             onUpdateWindow?.(updated);
                             return updated;
                         });
-                    } }
+                    }}
 
                     onTextChange={(id, newText) => {
                         setWindowObj((prev) => {
@@ -176,11 +185,11 @@ const Window: React.FC<WindowProps> = ({
                             onUpdateWindow?.(updated);
                             return updated;
                         });
-                    } }                />
+                    }} />
             ))}
 
             <ResizableDraggableBox
-                onRemove={onRemove} 
+                onRemove={onRemove}
                 snaptoGrid={snapToGrid}
                 gridSize={gridSize}
                 {...windowObj.text}
@@ -188,6 +197,7 @@ const Window: React.FC<WindowProps> = ({
                 scaleX={scaleX}
                 scaleY={scaleY}
                 type="text"
+                weight={0}
                 onDragStart={(e, id) => onDragStart(e, "text", id)}
                 onResize={(id, newWidth, newHeight) => {
                     setWindowObj((prev) => {
@@ -198,11 +208,11 @@ const Window: React.FC<WindowProps> = ({
                         onUpdateWindow?.(updated);
                         return updated;
                     });
-                } }
+                }}
 
                 onTextChange={(id, newText) => {
                     onUpdateQuestionText?.(newText);
-                } }            />
+                }} />
             <p className="absolute bottom-2 ml-2 transform text-white">{realPos.x}, {realPos.y}</p>
         </div>
     );

@@ -18,7 +18,8 @@ const updateWindow = async (windowData: Window, windowId: number) => {
                         y: button.getY(),
                         width: button.getWidth(),
                         height: button.getHeight(),
-                        text: button.getText()
+                        text: button.getText(),
+                        weight: button.getWeight()
                     }))
                 },
 

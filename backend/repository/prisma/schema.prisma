@@ -17,6 +17,7 @@ model Answer {
   id         Int      @id @default(autoincrement())
   answer     String
   questionId Int
+  weight     Int
   question   Question @relation(fields: [questionId], references: [id])
 }
 
@@ -50,6 +51,7 @@ model Button {
   height   Int
   text     String
   windowId Int
+  weight   Int
   window   Window @relation(fields: [windowId], references: [id])
 }
 

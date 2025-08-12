@@ -236,12 +236,13 @@ const removeQuestion = async (questionId: number) => {
   }
 };
 
-const castVote = async (qid: number, vote: string) => {
+const castVote = async (qid: number, vote: string, weight: number) => {
   try {
     const newVote = await database.answer.create({
       data: {
         answer: vote,
-        questionId: qid
+        questionId: qid,
+        weight: weight
       },
       include: {question: false}
     })

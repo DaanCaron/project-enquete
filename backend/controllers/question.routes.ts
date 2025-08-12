@@ -49,11 +49,12 @@ questionRouter.get('/:surveyId/:questionNumber', async (req: Request, res: Respo
 })
 
 
-questionRouter.post('/vote/:qid/:vote', async (req: Request, res: Response, next: NextFunction) =>{
+questionRouter.post('/vote/:qid/:vote/:weight', async (req: Request, res: Response, next: NextFunction) =>{
     const questionId = parseInt(req.params.qid)
     const vote = req.params.vote
+    const weight = parseInt(req.params.weight)
     try{
-        const response = await questionService.castVote(questionId, vote)
+        const response = await questionService.castVote(questionId, vote, weight)
         res.status(200).json(response)
     }catch (error){
         console.error(error);
