@@ -10,6 +10,7 @@ import {
     useGaugeState,
 } from '@mui/x-charts/Gauge';
 import { BarChart } from "@mui/x-charts";
+import MiddleFillGauge from "./MiddleGauge";
 
 
 const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
@@ -86,7 +87,7 @@ const Graph: React.FC = () => {
                             setAvg(50)
                             return
                         }
-                        //console.log(allWeights, total, 100 * allWeights.length)
+                        //console.log(allWeights, total, 100 * allWeights.length
                         setAvg((total / (100 * allWeights.length)) * 100)
                     }
                 }
@@ -137,7 +138,7 @@ const Graph: React.FC = () => {
                                 {
                                     data: counts,
                                     label: "Aantal stemmen",
-                                    color: "#4FC3F7",
+                                    color: "#7198f5",
                                 },
                             ]}
                             height={350}
@@ -151,7 +152,7 @@ const Graph: React.FC = () => {
                     )}
                     {graphStyle === 'gauge' && (
                         <div className="flex justify-center">
-                            <GaugeContainer
+                            {/* <GaugeContainer
                                 width={250}
                                 height={250}
                                 startAngle={-90}
@@ -162,7 +163,9 @@ const Graph: React.FC = () => {
                                 <GaugeReferenceArc />
                                 <GaugeValueArc />
                                 <GaugePointer />
-                            </GaugeContainer>
+                            </GaugeContainer> */}
+                            <MiddleFillGauge value={avg} />
+{Math.round(avg)}/100
                         </div>
                     )}
                 </div>
