@@ -48,6 +48,22 @@ surveyRouter.post("/add/:name", async (req: Request, res: Response, next: NextFu
     }
 })
 
+surveyRouter.delete("/:id", async (req: Request, res: Response, next: NextFunction) =>{
+    const surveyId = parseInt(req.params.id)
+    try{
+        const survey = await surveyService.removeSurveyById(surveyId)
+        res.status(200).json(survey)
+    }catch (error){
+        console.error(error);
+        if (error instanceof Error) {
+            res.status(500).json({ message: 'Failed to update question', error: error.message });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error', error: String(error) });
+        }
+        // res.status(500).json({message: "Error retriving question with id " + questionId +", on survey " + surveyId + "."})
+    }
+})
+
 
 
 export {surveyRouter}

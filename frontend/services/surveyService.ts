@@ -15,7 +15,15 @@ const addSurvey = async (name: string, survey: Survey) =>{
         })
 }
 
+const removeSurveyById = async (id: number) =>{
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/survey/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        })
+}
+
 export default{
     getAllSurveys,
-    addSurvey
+    addSurvey,
+    removeSurveyById
 }

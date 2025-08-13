@@ -34,15 +34,23 @@ const addSurveyModal: React.FC<props> = ({ onClose, reFetch }) => {
                 const ans = await res.json()
                 console.log(ans)
                 reFetch()
+                onClose()
 
             } else {
-                setMessage({ message: "Failed to create survey.", type: "Error" });
+                const ans = await res.json()
+                setMessage({ message: ans.error, type: "Error" });
             }
         }catch (error) {
-            console.error("Error while creating survey:", error);
-            setMessage({ message: "Generic error check logs!", type: "Error" });
+            if (error instanceof Error) {
+                console.error("Error while adding survey:", error.message);
+                setMessage({ message: error.message, type: "Error" });
+            } else {
+                console.error("Unknown error while adding survey:", error);
+                setMessage({ message: String(error), type: "Error" });
+            }
         }
     }
+    
 
     return (
         <div

@@ -47,12 +47,75 @@ const createSurvey = async (survey: Survey) =>{
     return Survey.from(createdSurvey)
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to delete question and related data");
+    throw new Error("Failed to add question and related data");
   }
 }
+
+const deleteSurveyById = async (id: number): Promise<void> => {
+  try {
+    await database.$transaction([
+      // Delete all answers for all questions in the survey
+      database.answer.deleteMany({
+        where: {
+          question: {
+            survey: { id }
+          }
+        }
+      }),
+
+      // Delete all buttons linked to windows of questions in this survey
+      database.button.deleteMany({
+        where: {
+          window: {
+            question: {
+              survey: { id }
+            }
+          }
+        }
+      }),
+
+      // Delete all text blocks linked to windows
+      database.text.deleteMany({
+        where: {
+          window: {
+            question: {
+              survey: { id }
+            }
+          }
+        }
+      }),
+
+      // Delete all questions
+      database.question.deleteMany({
+        where: {
+          survey: { id }
+        }
+      }),
+
+      // Delete all windows linked to questions
+      database.window.deleteMany({
+        where: {
+          question: {
+            survey: { id }
+          }
+        }
+      }),
+
+      // Finally, delete the survey itself
+      database.survey.delete({
+        where: { id }
+      })
+    ]);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Database error while deleting survey and related data.");
+  }
+};
+
 
 export default{
     getSurveyById,
     getAllSurveys,
-    createSurvey
+    createSurvey,
+    deleteSurveyById
 }

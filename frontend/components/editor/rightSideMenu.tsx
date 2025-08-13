@@ -1,6 +1,7 @@
 import { Survey } from "@/types"
 import { useEffect, useState } from "react"
 import AddSurveyModal from "./addSurveyModal"
+import RemoveSurveyModal from "./removeSurveyModal"
 
 type props = {
     surveys: Survey[] | null
@@ -15,10 +16,15 @@ type props = {
 
 const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, reFetch, submit, message, addQuestion, removeQuestion, selectedSurvey }) => {
     const [showModal, setShowModal] = useState(false)
+    const [showModalRemove, setShowModalRemove] = useState(false)
 
 
     const switchModalState = () => {
         setShowModal(prev => !prev)
+    }
+
+    const switchModalStateRemove = () => {
+        setShowModalRemove(prev => !prev)
     }
 
     useEffect(() => {
@@ -47,17 +53,33 @@ const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, 
                 </div>
                 <div className="w-full flex justify-between h-24">
                     <button
+                        onClick={() => switchModalStateRemove()}
+                        className="w-full rounded-md bg-red-500 hover:bg-red-600 transition-colors duration-150 text-white mt-10"
+                    >
+                        Verwijder deze enquete
+                    </button>
+                    <button
                         onClick={() => switchModalState()}
-                        className="w-full rounded-md bg-gray-400 hover:bg-gray-500 transition-colors  duration-150 text-white mt-10"
+                        className="w-full rounded-md ml-5 bg-gray-400 hover:bg-gray-500 transition-colors  duration-150 text-white mt-10"
                     >
                         Voeg een enquete toe
                     </button>
+
+                    
                     {showModal &&
                         <div>
                             <AddSurveyModal onClose={switchModalState} reFetch={reFetch}/>
                         </div>
 
                     }
+
+                    {showModalRemove &&
+                        <div>
+                            <RemoveSurveyModal onClose={switchModalStateRemove} reFetch={reFetch} selectedSurvey={selectedSurvey}/>
+                        </div>
+
+                    }
+
 
                 </div>
                 <div className="w-full flex justify-between h-28 ">

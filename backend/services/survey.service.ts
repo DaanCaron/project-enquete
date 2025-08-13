@@ -21,10 +21,10 @@ const createSurvey = async (surveyData: SurveyData, name: string) => {
 
   if (surveys) {
     for (let i = 0; i < surveys.length; i++) {
-        if(surveys[i].getName().toLowerCase() === name.toLowerCase()){
-            throw new Error("Name already exists"); 
-        }
-    }   
+      if (surveys[i].getName().toLowerCase() === name.toLowerCase()) {
+        throw new Error("Name already exists");
+      }
+    }
   }
   try {
     const survey = new Survey({
@@ -44,7 +44,27 @@ const createSurvey = async (surveyData: SurveyData, name: string) => {
   }
 };
 
+const removeSurveyById = async (id: number) => {
+    console.log({id: id})
+  // Make sure the survey exists first
+  const survey = await surveyDb.getSurveyById(id); // ✅ added await
+
+  if (!survey) {
+    throw new Error("No survey found with given ID");
+  }
+
+  try {
+    await surveyDb.deleteSurveyById(id);
+    return { message: `Survey with ID ${id} deleted successfully.` };
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to delete survey and related data.");
+  }
+};
+
+
 export default {
   getAllSurveys,
   createSurvey,
+  removeSurveyById,
 };
