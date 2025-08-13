@@ -11,7 +11,7 @@ const LeftSideMenu: React.FC<props> = ({ originalColor, changeColor, snapToGrid,
     return (
         <div className="bg-[#252525] mr-4 h-full w-64 p-4 rounded shadow-lg flex flex-col justify-between">
             <label className="flex flex-col items-center text-white font-medium gap-2">
-                <span>Pick a background</span>
+                <span>Kies een achtergrond</span>
                 <input
                     type="color"
                     className="w-16 h-16 p-1 rounded-lg shadow-inner border-2 border-white cursor-pointer"
@@ -29,9 +29,9 @@ const LeftSideMenu: React.FC<props> = ({ originalColor, changeColor, snapToGrid,
                 <label className="flex items-center gap-2 mt-11">
                     <button
                         onClick={() => addButton()}
-                        className="rounded-md bg-gray-400 hover:bg-gray-500 transition-colors duration-150 w-36 h-10"
+                        className="rounded-md bg-gray-400 hover:bg-gray-500 transition-colors duration-150 w-40 h-10"
                     >
-                        Add a button!
+                        Voeg een knop toe!
                     </button>
                 </label>
                 <div className="w-44 max-w-md items-center mt-11">

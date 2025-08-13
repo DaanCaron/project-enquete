@@ -32,6 +32,12 @@ export type WindowConfig ={
     text: TextBlock;
 }
 
+export type SurveyData ={
+    id: number;
+    name: string;
+    questions: any[]; 
+}
+
 export type Survey ={
     id: number;
     name: string;

@@ -36,7 +36,23 @@ const getAllSurveys = async () => {
   }
 };
 
+const createSurvey = async (survey: Survey) =>{
+  try{
+    const createdSurvey = await database.survey.create({
+      data:{
+        name: survey.getName()
+      },
+      include: {questions: false}
+    })
+    return Survey.from(createdSurvey)
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to delete question and related data");
+  }
+}
+
 export default{
     getSurveyById,
-    getAllSurveys
+    getAllSurveys,
+    createSurvey
 }

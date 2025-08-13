@@ -88,11 +88,12 @@ const Admin: React.FC = () => {
                         onChange={(e) => setSelectedSurvey(parseInt(e.target.value))}
                         className="w-full px-4 py-4 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     >
-                        {surveys?.map((survey) => (
-                            <option key={survey.id} value={survey.id}>
-                                {survey.name}
-                            </option>
-                        ))}
+                        {surveys
+                            ?.filter((survey: Survey) => survey.questions.length > 0).map((survey: Survey) => (
+                                <option key={survey.id} value={survey.id}>
+                                    {survey.name}
+                                </option>
+                            ))}
                     </select>
 
                     <button

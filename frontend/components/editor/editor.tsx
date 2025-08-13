@@ -266,10 +266,10 @@ const Editor = () => {
                 buttons: [],
                 text: {
                     id: -1,
-                    x: 0,
-                    y: 0,
-                    width: 200,
-                    height: 200,
+                    x: 90,
+                    y: 45,
+                    width: 855,
+                    height: 180,
                     windowId: -1,
                 },
             },
@@ -325,7 +325,7 @@ const Editor = () => {
         <div className="h-screen w-screen flex flex-col justify-center items-center">
             <div className="flex flex-row items-start ">
 
-                {questions &&
+                {(questions && questions.length > 0) &&
                     <>
                         <LeftSideMenu
                             originalColor={questions[selectedQuestion - 1].window.background}

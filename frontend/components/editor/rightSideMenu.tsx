@@ -1,5 +1,6 @@
 import { Survey } from "@/types"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import AddSurveyModal from "./addSurveyModal"
 
 type props = {
     surveys: Survey[] | null
@@ -13,6 +14,13 @@ type props = {
 }
 
 const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, reFetch, submit, message, addQuestion, removeQuestion, selectedSurvey }) => {
+    const [showModal, setShowModal] = useState(false)
+
+
+    const switchModalState = () => {
+        setShowModal(prev => !prev)
+    }
+
     useEffect(() => {
 
     }, [selectedSurvey])
@@ -22,7 +30,7 @@ const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, 
             <div>
                 <div className="w-full max-w-md">
                     <label htmlFor="survey-select" className="block mb-2 font-medium">
-                        Kies een survey
+                        Kies een enquete
                     </label>
                     <select
                         id="survey-select"
@@ -37,19 +45,34 @@ const RightSideMenu: React.FC<props> = ({ surveys, fetchAllQuestionsBySurveyId, 
                         ))}
                     </select>
                 </div>
+                <div className="w-full flex justify-between h-24">
+                    <button
+                        onClick={() => switchModalState()}
+                        className="w-full rounded-md bg-gray-400 hover:bg-gray-500 transition-colors  duration-150 text-white mt-10"
+                    >
+                        Voeg een enquete toe
+                    </button>
+                    {showModal &&
+                        <div>
+                            <AddSurveyModal onClose={switchModalState} reFetch={reFetch}/>
+                        </div>
+
+                    }
+
+                </div>
                 <div className="w-full flex justify-between h-28 ">
 
                     <button
                         onClick={() => removeQuestion()}
                         className="rounded-md bg-red-400 hover:bg-red-500 transition-colors duration-150 w-24 text-white mt-10"
                     >
-                        remove current question!
+                        Verwijder huidige vraag!
                     </button>
                     <button
                         onClick={() => addQuestion()}
                         className="rounded-md bg-green-400 hover:bg-green-500 transition-colors w-24 duration-150 text-white mt-10"
                     >
-                        Add a question!
+                        Voeg een vraag toe!
                     </button>
                 </div>
             </div>

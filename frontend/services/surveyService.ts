@@ -1,3 +1,5 @@
+import { Survey } from "@/types"
+
 const getAllSurveys = async () =>{
     return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/survey/all`, {
             method: 'GET',
@@ -5,6 +7,15 @@ const getAllSurveys = async () =>{
         })
 }
 
+const addSurvey = async (name: string, survey: Survey) =>{
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/survey/add/${name}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(survey),
+        })
+}
+
 export default{
-    getAllSurveys
+    getAllSurveys,
+    addSurvey
 }
