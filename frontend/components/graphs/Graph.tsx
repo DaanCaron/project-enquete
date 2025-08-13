@@ -66,7 +66,6 @@ const Graph: React.FC = () => {
                 if (res.ok) {
                     const ansData = await res.json()
                     if (graphStyle === 'hist') {
-                        console.log("did this")
                         const uniqueCategories = [...new Set(ansData.map((answer: Answer) => answer.answer))] as string[];
 
                         const categoryCounts = uniqueCategories.map(
@@ -131,13 +130,12 @@ const Graph: React.FC = () => {
                                     id: 'barCategories',
                                     data: categories,
                                     scaleType: 'band',
-                                    label: "Antwoorden",
                                 },
                             ]}
+                            yAxis={[{ position: 'none' }]}
                             series={[
                                 {
                                     data: counts,
-                                    label: "Aantal stemmen",
                                     color: "#7198f5",
                                 },
                             ]}
@@ -145,7 +143,6 @@ const Graph: React.FC = () => {
                             margin={{ top: 20, right: 20, bottom: 40, left: 60 }}
                             sx={{
                                 '& .MuiChartsAxis-root': { stroke: '#ccc' },
-                                '& .MuiChartsAxis-tickLabel': { fill: '#eee', fontSize: 14 },
                                 '& .MuiChartsLegend-root': { fill: '#fff' },
                             }}
                         />
@@ -165,7 +162,7 @@ const Graph: React.FC = () => {
                                 <GaugePointer />
                             </GaugeContainer> */}
                             <MiddleFillGauge value={avg} />
-                            <p className="text-white text-3xl">{Math.round(avg)}/100</p>
+                            {/* <p className="text-white text-3xl">{Math.round(avg)}/100</p> */}
                         </div>
                     )}
                 </div>
