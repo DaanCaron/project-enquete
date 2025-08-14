@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "start:backend": "cd ../backend && node dist/app.js",
-    "start:frontend": "npm run start",
-    "start:ws": "cd ../websocket && node server.js",
+    "start:backend": "cd ../backend && npm install && node dist/app.js",
+    "start:frontend": "npm install && npm run start",
+    "start:ws": "cd ../websocket && npm install && node server.js",
     "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "lint": "next lint"
   },
