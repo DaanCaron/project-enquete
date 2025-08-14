@@ -1,0 +1,2 @@
+2025-08-14 14:20:05 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\Users\Daan\Desktop\Project_enquete\project-enquete\node_modules\node-windows\lib\wrapper.js --file C:\Users\Daan\Desktop\Project_enquete\project-enquete\backend\dist\app.js --scriptoptions= --log "Backend wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2025-08-14 14:20:05 - Started 19120
