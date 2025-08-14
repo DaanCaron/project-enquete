@@ -1,0 +1,30 @@
+2025-08-14 14:14:10 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\Users\Daan\Desktop\Project_enquete\project-enquete\frontend\node_modules\node-windows\lib\wrapper.js --file C:\Users\Daan\Desktop\Project_enquete\project-enquete\frontend\.next\standalone\server.js --scriptoptions= --log "Frontend wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2025-08-14 14:14:10 - Started 26292
+2025-08-14 14:16:51 - Stopping frontend.exe
+2025-08-14 14:16:51 - ProcessKill 26292
+2025-08-14 14:16:52 - Found child process: 1944 Name: conhost.exe
+2025-08-14 14:16:52 - Found child process: 24584 Name: node.exe
+2025-08-14 14:16:52 - Stopping process 1944
+2025-08-14 14:16:52 - Send SIGINT 1944
+2025-08-14 14:16:52 - SIGINT to 1944 failed - Killing as fallback
+2025-08-14 14:16:52 - Found child process: 26960 Name: node.exe
+2025-08-14 14:16:52 - Found child process: 2068 Name: conhost.exe
+2025-08-14 14:16:52 - Found child process: 25932 Name: node.exe
+2025-08-14 14:16:52 - Stopping process 2068
+2025-08-14 14:16:52 - Send SIGINT 2068
+2025-08-14 14:16:52 - SIGINT to 2068 failed - Killing as fallback
+2025-08-14 14:16:52 - Stopping process 25932
+2025-08-14 14:16:52 - Send SIGINT 25932
+2025-08-14 14:16:52 - SIGINT to 25932 failed - Killing as fallback
+2025-08-14 14:16:52 - Stopping process 26960
+2025-08-14 14:16:52 - Send SIGINT 26960
+2025-08-14 14:16:52 - SIGINT to 26960 failed - Killing as fallback
+2025-08-14 14:16:52 - Stopping process 24584
+2025-08-14 14:16:52 - Send SIGINT 24584
+2025-08-14 14:16:52 - SIGINT to 24584 failed - Killing as fallback
+2025-08-14 14:16:52 - Stopping process 26292
+2025-08-14 14:16:52 - Send SIGINT 26292
+2025-08-14 14:16:52 - SIGINT to 26292 failed - Killing as fallback
+2025-08-14 14:16:52 - Finished frontend.exe
+2025-08-14 14:20:17 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\Users\Daan\Desktop\Project_enquete\project-enquete\frontend\node_modules\node-windows\lib\wrapper.js --file C:\Users\Daan\Desktop\Project_enquete\project-enquete\frontend\.next\standalone\server.js --scriptoptions= --log "Frontend wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2025-08-14 14:20:17 - Started 18788
