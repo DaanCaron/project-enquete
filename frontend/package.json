@@ -6,6 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:backend": "cd ../backend && node dist/app.js",
+    "start:frontend": "npm run start",
+    "start:ws": "cd ../websocket && node server.js",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "lint": "next lint"
   },
   "dependencies": {
@@ -34,6 +38,7 @@
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3"

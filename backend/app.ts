@@ -22,6 +22,7 @@ app.use('/survey', surveyRouter);
 app.use('/window', windowRouter);
 app.use('/answer', answerRouter);
 
+
 app.get('/status', (req, res) => {
     res.json({ message: 'Enquete API is running...' });
 });
