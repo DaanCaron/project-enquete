@@ -1,2 +1,16 @@
 2025-08-14 14:20:05 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\Users\Daan\Desktop\Project_enquete\project-enquete\node_modules\node-windows\lib\wrapper.js --file C:\Users\Daan\Desktop\Project_enquete\project-enquete\backend\dist\app.js --scriptoptions= --log "Backend wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2025-08-14 14:20:05 - Started 19120
+2025-08-15 11:33:42 - Stopping backend.exe
+2025-08-15 11:33:42 - ProcessKill 19120
+2025-08-15 11:33:42 - Found child process: 18564 Name: conhost.exe
+2025-08-15 11:33:42 - Found child process: 4272 Name: node.exe
+2025-08-15 11:33:42 - Stopping process 18564
+2025-08-15 11:33:42 - Send SIGINT 18564
+2025-08-15 11:33:42 - SIGINT to 18564 failed - Killing as fallback
+2025-08-15 11:33:43 - Stopping process 4272
+2025-08-15 11:33:43 - Send SIGINT 4272
+2025-08-15 11:33:43 - SIGINT to 4272 failed - Killing as fallback
+2025-08-15 11:33:43 - Stopping process 19120
+2025-08-15 11:33:43 - Send SIGINT 19120
+2025-08-15 11:33:43 - SIGINT to 19120 failed - Killing as fallback
+2025-08-15 11:33:43 - Finished backend.exe

@@ -126,7 +126,7 @@ const Admin: React.FC = () => {
                 <div className="text-3xl flex gap-5">
                     <button
                         onClick={handleToggleGraph}
-                        className="px-6 py-6 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
+                        className="px-6 py-6 w-full rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 active:scale-95"
                     >
                         Toon grafiek voor actieve vraag
                     </button>

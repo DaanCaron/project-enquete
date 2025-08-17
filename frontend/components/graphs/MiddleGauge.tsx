@@ -3,8 +3,8 @@ import { Sector } from "recharts";
 export default function MiddleFillGauge({
   value,
   maxValue = 100,
-  size = 200,
-  height = 120,
+  size = 1000,
+  height = 520,
 }: {
   value: number;
   maxValue?: number;

@@ -122,30 +122,26 @@ const Graph: React.FC = () => {
     return (
         <div className="w-full h-full flex justify-center items-center p-6 bg-[#2c2c2c]">
             {!state || (
-                <div className="w-full max-w-3xl bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+                <div className="w-full h-[700px]"> 
                     {graphStyle === "hist" && (
                         <BarChart
-                            xAxis={[
-                                {
-                                    id: 'barCategories',
-                                    data: categories,
-                                    scaleType: 'band',
-                                },
-                            ]}
-                            yAxis={[{ position: 'none' }]}
-                            series={[
-                                {
-                                    data: counts,
-                                    color: "#7198f5",
-                                },
-                            ]}
-                            height={350}
-                            margin={{ top: 20, right: 20, bottom: 40, left: 60 }}
-                            sx={{
-                                '& .MuiChartsAxis-root': { stroke: '#ccc' },
-                                '& .MuiChartsLegend-root': { fill: '#fff' },
-                            }}
-                        />
+      xAxis={[
+        {
+          id: 'barCategories',
+          data: categories,
+          scaleType: 'band',
+          tickLabelStyle: {
+            fontWeight: 600,
+            fill: '#518eb9',
+          },
+        },
+      ]}
+      yAxis={[{ position: 'none' }]}
+      series={[{ data: counts, color: '#7198f5' }]}
+      height={700}               // chart height
+      margin={{ top: 20, right: 20, bottom: 100, left: 20 }} // bottom gives space for labels
+      sx={{ "& .MuiChartsAxis-tickLabel tspan": { fontSize: "4rem",  } }}
+    />
                     )}
                     {graphStyle === 'gauge' && (
                         <div className="flex flex-col justify-evenly items-center">
